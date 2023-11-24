@@ -1,31 +1,24 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
 
 </script>
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-      <router-link to="/community">Load Community page</router-link><br/>
-      <router-link to="/doc">Load Documentation page</router-link><br/>
-      <router-link :to="{name:'Ecosystem'}">Load Ecosystem page</router-link><br/>
-      <router-link to="/support">Load Support page</router-link><br/>
-      <router-link :to="{name:'Tooling'}">Load Tooling page</router-link>
+          <h3>App.vue nur noch zum Stylen und größere Komponenten verwenden!<br>
+           Ansonsten in den views arbeiten, dazu router-view component verwenden und in main.js routing definieren<br>
+          Mit 'router-link to="xxx" kann man dann buttons mit links versehen'</h3>
     </div>
   </header>
-
-  <h3>The page will appear below:</h3>
-  <main style="border: 1px dotted cornflowerblue; width:60%; ">
-    <router-view></router-view>
-  </main>
+  <!--<main style="border: 1px dotted cornflowerblue; width:60%; ">
+    <router-view></router-view>  Die hier werden über router/index.js generiert. Die .vue files sind in /views
+  </main>-->
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
+  line-height: 2.0;
 }
 
 .logo {

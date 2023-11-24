@@ -1,4 +1,4 @@
 Das hier sollte nach
 git commit
 git push
-im repro landen
+im repository landen (wie ein Flugzeug).

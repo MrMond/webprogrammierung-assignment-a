@@ -1,17 +1,46 @@
-# router
+# Vue.js course
 
-This template should help get you started developing with Vue 3 in Vite.
+This project is meant to teach Vue.js fundamentals by creating a blog, step by step. It uses the [Material Design / Vuetify](https://vuetifyjs.com/en/) framework and stores its data in the Google [Firebase](https://firebase.google.com/) cloud.
 
-## Recommended IDE Setup
+Follow these steps to continuously build a client-side Blog web app with [Vue.js](https://vuejs.org/guide/introduction.html).
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## 1. Create project
+1. In your IDE, create a new Vue.js project:
+![New project](screenshots/New_project.png)
 
-## Customize configuration
 
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+2. Create these folders and files:<br/>
+![folders](screenshots/Folder_structure.png)
 
-## Project Setup
 
+3. Create the application routes in [`src/router/index.js`](src/router/index.js):
+```javascript
+import Overview from "@/views/posts/Overview.vue";
+import Users from "@/views/Users.vue";
+import Categories from "@/views/Categories.vue";
+import Read from "@/views/posts/Read.vue";
+import Create from "@/views/posts/Create.vue";
+
+const routes = [
+  {path: '/', component: Overview},
+  {path: '/posts', component: Overview},
+  {path: '/posts/:id', component: Read},
+  {path: '/posts/create', component: Create},
+  {path: '/posts/update', component: Overview},
+  {path: '/posts/save', component: Overview},
+  {path: '/posts/delete', component: Overview},
+  {path: '/categories', component: Categories},
+  {path: '/users', component: Users},
+];
+export default routes;
+```
+
+4. Create and mount all necessary plugins and Vue in `main.js`:
+![main.js code](screenshots/Main_code.png)
+
+
+
+### Project Setup
 ```sh
 npm install
 ```

@@ -13,6 +13,7 @@ export default {
 
     handleImage(image){
       //do something with the image
+      console.log("recieved a picture")
     },
   },
 };

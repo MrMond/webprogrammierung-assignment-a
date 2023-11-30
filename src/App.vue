@@ -23,6 +23,7 @@ const drawer = ref(true)
             <VListItem>Escape Rooms</VListItem>
             <VListItem>Mountains</VListItem>
             <VListItem>Museums</VListItem>
+            <!--das hier ist die drop down bar-->
           </VList>
         </VMenu>
       </VBtn>

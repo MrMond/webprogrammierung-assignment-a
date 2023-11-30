@@ -7,7 +7,7 @@ const drawer = ref(true)
 
 <template>
   <VLayout row wrap rounded rounded-md align-start>
-    <VAppBar rounded class="transparent">
+    <VAppBar rounded class="white-background">
       <VAppBarNavIcon variant="text" @click.stop="drawer = !drawer"/>
       <VToolbarTitle>Travel Blog</VToolbarTitle>
 
@@ -38,22 +38,9 @@ const drawer = ref(true)
       </VBtn>
     </VAppBar>
 
-    <VBottomNavigation grow >
-      <VBtn size="large" link to="/users">
-        <VIcon>mdi-account-multiple</VIcon>
-        Users
-      </VBtn>
-      <VBtn size="large" link to="/posts">
-        <VIcon>mdi-note-plus</VIcon>
-        Posts
-      </VBtn>
-      <VBtn size="large" link to="/categories">
-        <VIcon>mdi-shape</VIcon>
-        Categories
-      </VBtn>
-    </VBottomNavigation>
 
-    <VNavigationDrawer mobile-breakpoint="sm" v-model="drawer" class="transparent">
+
+    <VNavigationDrawer mobile-breakpoint="sm" v-model="drawer" class="white-background">
       <VList>
         <VListItem :prepend-icon="BlogIcon" link to="/posts">
           Posts
@@ -79,3 +66,8 @@ const drawer = ref(true)
   </VLayout>
 </template>
 
+<style scoped>
+.white-background {
+  background-color: #ffffff; /* Weiß für die Hintergrundfarbe */
+}
+</style>

@@ -16,7 +16,12 @@ export default {
       const files = event.dataTransfer.files;
       if (files.length > 0) {
         const image = files[0];
-        this.handleImage(image);
+        if (this.isTypeAllowed(image.type)) {
+          this.handleImage(image);
+        } else {
+          console.log("recieved unsupported file")
+          alert("Unsupported file type")
+        }
       }
     },
 
@@ -27,12 +32,17 @@ export default {
 
         // Store the image data in sessionStorage
         sessionStorage.setItem('uploadedImage', this.image);
-        console.log("stored picture in session storage");
+        window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
       };
       reader.readAsDataURL(image);
 
       console.log("received a picture");
     },
+
+    isTypeAllowed(fileType) {
+      const allowedTypes = ["image/jpeg", "image/png", "image/avif"];
+      return allowedTypes.includes(fileType);
+    }
   },
 };
 </script>
@@ -44,9 +54,8 @@ export default {
       @drop="handleDrop"
   >
     <span v-if="!image">Drag and Drop Image here</span>
-    <img v-if="image" :src="image" alt="Uploaded Image" />
+    <span v-if="image">Drag and Drop another Image in order to replace the picture currently on display</span>
   </div>
-  <span v-if="image">Drag and Drop another Image over the one you're working on, in order to replace it</span>
 </template>
 
 <style scoped>
@@ -55,10 +64,5 @@ export default {
   padding: 20px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.15);
-}
-
-.image-uploader img {
-  max-width: 100%;
-  max-height: 2000px; /* You can adjust the max-height as needed */
 }
 </style>

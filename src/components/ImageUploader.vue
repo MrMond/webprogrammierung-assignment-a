@@ -5,6 +5,10 @@ export default {
       image: null,
     };
   },
+  mounted() {
+    // Retrieve image from sessionStorage when the component is mounted
+    this.image = sessionStorage.getItem('uploadedImage');
+  },
   methods: {
     handleDrop(event) {
       event.preventDefault();
@@ -20,6 +24,10 @@ export default {
       const reader = new FileReader();
       reader.onload = () => {
         this.image = reader.result;
+
+        // Store the image data in sessionStorage
+        sessionStorage.setItem('uploadedImage', this.image);
+        console.log("stored picture in session storage");
       };
       reader.readAsDataURL(image);
 

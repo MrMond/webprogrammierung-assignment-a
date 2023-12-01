@@ -1,16 +1,6 @@
 
 <script setup>
 import ImageUploader from "@/components/ImageUploader.vue";
-//export default{
-//  components:{
-//    ImageUploader,
-//  },
-//  methods:{
-//    handleDisplayImage(image){
-//      //handle it
-//    },
-//  },
-//};
 </script>
 
 <template>

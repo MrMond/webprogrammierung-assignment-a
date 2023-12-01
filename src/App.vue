@@ -43,14 +43,14 @@ const drawer = ref(true)
 
     <VNavigationDrawer mobile-breakpoint="sm" v-model="drawer" class="white-background">
       <VList>
-        <VListItem :prepend-icon="BlogIcon" link to="/posts">
-          Posts
+        <VListItem :prepend-icon="BlogIcon" link to="/home">
+          Home
         </VListItem>
-        <VListItem prepend-icon="mdi-shape" link to="/categories">
-          Categories
+        <VListItem prepend-icon="mdi-shape" link to="/Meowsterpeace Gallery">
+          Meowsterpeace Gallery
         </VListItem>
-        <VListItem prepend-icon="mdi-account-multiple" link to="/users">
-          Users
+        <VListItem prepend-icon="mdi-account-multiple" link to="/CatMemeGenerator">
+          CatMemeGenerator
         </VListItem>
       </VList>
     </VNavigationDrawer>

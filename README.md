@@ -15,9 +15,9 @@ Follow these steps to continuously build a client-side Blog web app with [Vue.js
 
 3. Create the application routes in [`src/router/index.js`](src/router/index.js):
 ```javascript
-import Overview from "@/views/posts/Overview.vue";
-import Users from "@/views/Users.vue";
-import Categories from "@/views/Categories.vue";
+import Overview from "@/views/posts/Home.vue";
+import Users from "@/views/Generator.vue";
+import Categories from "@/views/Meowsterpeace.vue";
 import Read from "@/views/posts/Read.vue";
 import Create from "@/views/posts/Create.vue";
 

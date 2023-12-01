@@ -1,10 +1,11 @@
+
 <script setup>
 import PostCard from "@/components/PostCard.vue";
 </script>
 
 <template>
   <v-container>
-    <h1>Posts overview</h1>
+    <h1>Meowsterpeace Gallery</h1>
     <v-row>
       <v-col
           v-for="i in 9"

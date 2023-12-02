@@ -12,6 +12,6 @@ const props = defineProps(['title'])
     <!-- Hier könnten weitere Inhalte der Karte platziert werden -->
     <!-- <v-badge content="Beaches" color="error"/> -->
     <VDivider/>
-    <VImg src="/user1-128x128.jpg" alt="Your Image"/>
+    <VImg src="/Screenshot (10).png" alt="Your Image"/>
   </VCard>
 </template>

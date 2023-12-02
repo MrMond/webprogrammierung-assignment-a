@@ -1,3 +1,4 @@
+<!-- PostCard.vue -->
 <script setup>
 const props = defineProps(['title'])
 </script>
@@ -7,17 +8,10 @@ const props = defineProps(['title'])
       class="mx-auto"
       max-width="280"
       :title="props.title"
-      subtitle="Freddie on 2023-11-15, 05:15"
   >
-    <template v-slot:prepend>
-      <VAvatar >
-        <VImg src="/user1-128x128.jpg" alt="Freddie"/>
-      </VAvatar>
-    </template>
-<!--        <v-badge content="Beaches" color="error"/>-->
+    <!-- Hier könnten weitere Inhalte der Karte platziert werden -->
+    <!-- <v-badge content="Beaches" color="error"/> -->
     <VDivider/>
-    <VCardText>
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.
-    </VCardText>
+    <VImg src="/user1-128x128.jpg" alt="Your Image"/>
   </VCard>
 </template>

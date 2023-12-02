@@ -29,11 +29,13 @@ import { ref } from 'vue';
 <style scoped>
 .catchphrase {
   color: white;
-  font-weight: bold;
-  font-family: '72 Black', cursive;
-  font-size: 45px; 
+  font-family: 'Dancing Script', cursive; /* Ersetzen Sie 'Neue Schriftart' durch den Namen Ihrer gewünschten Schriftart */
+  font-size: 45px;
   margin-bottom: 20px;
 }
 </style>
+
+
+
 
 

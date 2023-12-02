@@ -58,10 +58,7 @@ const drawer = ref(true)
     <VMain>
       <RouterView></RouterView>
     </VMain>
-    <VBtn link to="/posts/create"
-          variant="elevated" icon="mdi-plus" color="indigo-darken-4"
-          position="fixed" size="large" style="bottom:5em; right:3em">
-    </VBtn>
+
 
 
   </VLayout>

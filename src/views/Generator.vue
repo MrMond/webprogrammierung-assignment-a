@@ -5,7 +5,7 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 </script>
 
 <template>
-  <div>
+  <div class="black-background">
     <h1 class="header-title">Meow Generator</h1>
     <image-manipulation />
     <image-uploader @display-image="handleDisplayImage" />
@@ -13,5 +13,8 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 </template>
 
 <style scoped>
-
+.black-background {
+  background-color: black;
+  color: white;
+}
 </style>

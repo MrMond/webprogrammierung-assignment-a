@@ -1,71 +1,80 @@
-<script setup>
-import BlogIcon from "@/components/icons/IconBlog.vue";
-import {ref} from 'vue'
-
-const drawer = ref(true)
-</script>
-
 <template>
   <VLayout row wrap rounded rounded-md align-start>
     <VAppBar rounded class="white-background">
+      <!-- Symbol für die Menüleiste -->
       <VAppBarNavIcon variant="text" @click.stop="drawer = !drawer"/>
-      <VToolbarTitle>Travel Blog</VToolbarTitle>
 
-      <VSpacer></VSpacer>
-      <VBtn variant="text" icon="mdi-magnify"></VBtn>
-      <VBtn variant="text" icon>
-        <VIcon>mdi-filter</VIcon>
-        <VMenu activator="parent">
-          <VList density="compact">
-            <VListItem>Attractions</VListItem>
-            <VListItem>Beaches</VListItem>
-            <VListItem>Cities</VListItem>
-            <VListItem>Escape Rooms</VListItem>
-            <VListItem>Mountains</VListItem>
-            <VListItem>Museums</VListItem>
-            <!--das hier ist die drop down bar-->
-          </VList>
-        </VMenu>
-      </VBtn>
-
-      <VBtn variant="text" icon>
-        <VIcon>mdi-dots-vertical</VIcon>
-        <VMenu activator="parent">
-          <VList density="compact">
-            <VListItem>Profile</VListItem>
-            <VListItem>Settings</VListItem>
-          </VList>
-        </VMenu>
-      </VBtn>
+      <!-- Toolbar Titel -->
+      <v-toolbar class="white-background">
+        <v-toolbar-title class="titel-schriftzug">CatMemeGenerator</v-toolbar-title>
+      </v-toolbar>
     </VAppBar>
-
-
 
     <VNavigationDrawer mobile-breakpoint="sm" v-model="drawer" class="white-background">
       <VList>
-        <VListItem :prepend-icon="BlogIcon" link to="/home">
+        <!-- Navigationspunkte -->
+        <VListItem :prepend-icon="BlogIcon" link to="/home" @click="handleNavigation">
           Home
         </VListItem>
-        <VListItem prepend-icon="mdi-shape" link to="/Meowsterpeace Gallery">
+        <VListItem prepend-icon="mdi-shape" link to="/Meowsterpeace Gallery" @click="handleNavigation">
           Meowsterpeace Gallery
         </VListItem>
-        <VListItem prepend-icon="mdi-account-multiple" link to="/CatMemeGenerator">
+        <VListItem prepend-icon="mdi-account-multiple" link to="/CatMemeGenerator" @click="handleNavigation">
           CatMemeGenerator
         </VListItem>
       </VList>
+
+      <!-- Logo am unteren Ende -->
+      <v-divider></v-divider>
+      <v-row justify="center" align="center" class="logo-container">
+        <img src="@/assets/Logos/cat-meme-generator_logo.png" alt="Logo" class="logo"/>
+      </v-row>
     </VNavigationDrawer>
 
     <VMain>
       <RouterView></RouterView>
     </VMain>
-
-
-
   </VLayout>
 </template>
 
+<script setup>
+import BlogIcon from "@/components/icons/IconBlog.vue";
+import { ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+
+const drawer = ref(false)
+const route = useRoute()
+const router = useRouter()
+
+const handleNavigation = () => {
+  drawer.value = false
+}
+</script>
+
 <style scoped>
+@font-face {
+  font-family: "Lobster";
+  src: url("@/assets/fonts/Lobster-Regular.ttf") format("truetype");
+}
+
 .white-background {
   background-color: #ffffff; /* Weiß für die Hintergrundfarbe */
+}
+
+.titel-schriftzug {
+  text-align: center;
+  display: grid;
+  place-items: center;
+  background-color: white;
+  font-family: Lobster;
+  font-size: x-large;
+}
+
+.logo-container {
+  padding: 16px; /* Anpassen Sie den Abstand nach Bedarf */
+}
+
+.logo {
+  width: 175px; /* Anpassen Sie die Breite des Logos nach Bedarf */
 }
 </style>

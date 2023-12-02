@@ -35,8 +35,6 @@ export default {
         window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
       };
       reader.readAsDataURL(image);
-
-      console.log("received a picture");
     },
 
     isTypeAllowed(fileType) {

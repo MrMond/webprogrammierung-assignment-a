@@ -8,7 +8,7 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
   <div class="black-background">
     <h1 class="header-title">Meow Generator</h1>
     <image-manipulation />
-    <image-uploader @display-image="handleDisplayImage" />
+    <image-uploader />
   </div>
 </template>
 

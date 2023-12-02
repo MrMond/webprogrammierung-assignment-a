@@ -17,6 +17,8 @@ const updateDisplayEventListener = () => {
 
 const buttonText = () => {
   console.log("pressed Text button")
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
 };
 
 const buttonSticker = () => {

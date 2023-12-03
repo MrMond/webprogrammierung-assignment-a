@@ -1,39 +1,62 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-
+//setup of image
 const image = ref(sessionStorage.getItem('uploadedImage'));
 const imageAvailable = ref(!!image.value);
-
-const cursorX = ref(0)
-const cursorY = ref(0)
+// drawing variables
+const cursorX = ref(0);
+const cursorY = ref(0);
+const selectedElement = ref(null);
+const allElements = ref([]);
 const updateImage = () => {
   image.value = sessionStorage.getItem('uploadedImage');
   imageAvailable.value = !!image.value;
   redrawCanvas()
-  console.log("updated image")
+  console.log("updated image");
 };
 
 const updateDisplayEventListener = () => {
-  console.log("received picture")
+  console.log("received picture");
   updateImage();
 };
 
-//button functionality
+//button listeners
 const buttonText = () => {
-  console.log("pressed Text button")
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  ctx.font = "50px sans-serif";
-  ctx.fillText("Clicked Button", cursorX.value, cursorY.value);
+  createTextElement();
+  console.log("pressed Text button");
+  ///////////////////////////////////
+  //const canvas = document.getElementById("canvas");
+  //const ctx = canvas.getContext("2d");
+  //ctx.font = "50px sans-serif";
+  //ctx.fillText("Click to edit", cursorX.value, cursorY.value);
 };
 
 const buttonSticker = () => {
-  console.log("pressed Sticker button")
-}
+  console.log("pressed Sticker button");
+};
 
-const buttonMeowgic = () => {
-  console.log("pressed Meowgic button")
-}
+const buttonSave = () => {
+  console.log("pressed Save button");
+};
+
+//button functionality
+const createTextElement = () => {
+  const canvas = document.getElementById("canvas");
+  if (canvas) {
+    //const textarea = document.createElement(('textarea'));
+    //textarea.value = "Click to edit";
+    //textarea.style.position = "absolute";
+    //textarea.style.left = "10px";
+    //textarea.style.top = "10px";
+//
+    //canvas.appendChild(textarea);
+//
+    //makeDraggable(textarea);
+
+    allElements.value.push(textarea);
+    selectedElement.value = textarea;
+  }
+};
 
 //canvas methods
 const redrawCanvas = () => {
@@ -49,8 +72,8 @@ const redrawCanvas = () => {
     canvas.width = img.width;
     ctx.drawImage(img,0,0, canvas.width, canvas.height);
   }
-  console.log("redrew canvas")
-}
+  console.log("redrew canvas");
+};
 
 const handleCanvasClick = (event, canvas) => {
   //const canvas = document.getElementById("canvas");
@@ -60,14 +83,42 @@ const handleCanvasClick = (event, canvas) => {
 
   cursorX.value = (event.clientX - rect.left) * scaleFactorX;
   cursorY.value = (event.clientY - rect.top) * scaleFactorY;
-  window.dispatchEvent(new Event('updateCursorPosition'));
+  window.dispatchEvent(new Event('updateCursorPosition')); //maybe irrelevant
 };
+
+//const makeDraggable = (element) => { //// anschauen und überarbeiten
+//  let isDragging = false;
+//  let offsetX, offsetY;
+//
+//  element.addEventListener('mousedown', (e) => {
+//    isDragging = true;
+//    offsetX = e.clientX - element.getBoundingClientRect().left;
+//    offsetY = e.clientY - element.getBoundingClientRect().top;
+//
+//    // Set the selected element
+//    selectedElement.value = element;
+//  });
+//
+//  document.addEventListener('mousemove', (e) => {
+//    if (isDragging) {
+//      const x = e.clientX - offsetX;
+//      const y = e.clientY - offsetY;
+//      element.style.left = `${x}px`;
+//      element.style.top = `${y}px`;
+//    }
+//  });
+//
+//  document.addEventListener('mouseup', () => {
+//    isDragging = false;
+//  });
+//};
+//
 
 //required for persistence
 onMounted(() => {
   window.addEventListener('updateDisplay', updateDisplayEventListener);
   if (imageAvailable.value) {
-    redrawCanvas()
+    redrawCanvas();
   }
 });
 
@@ -80,7 +131,7 @@ onBeforeUnmount(() => {
   <div class="button-container">
     <button @click="buttonText"> Text </button>
     <button @click="buttonSticker"> Sticker </button>
-    <button @click="buttonMeowgic"> Meowgic </button>
+    <button @click="buttonSave"> Save </button>
   </div>
   <div class = "image-manipulation">
     <canvas id="canvas" width="0" height="0"></canvas>

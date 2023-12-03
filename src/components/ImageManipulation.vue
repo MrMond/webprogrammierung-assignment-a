@@ -31,17 +31,14 @@ const buttonSticker = () => {
 };
 
 const buttonSave = () => {
-  console.log("pressed Save button");
+  console.log(`pressed Save button; len(allElements): ${allElements.value.length}`);
+  redrawCanvas()
 };
 
 //button functionality
 const createTextElement = () => { //type = "text"
   const canvas = document.getElementById("canvas");
-  if (canvas) {
-    const textarea = null
-    allElements.value.push(textarea);
-    selectedElement.value = textarea;
-  }
+  const ctx = canvas.getContext("2d");
 };
 
 const createStickerElement = () => {
@@ -50,21 +47,16 @@ const createStickerElement = () => {
   const img = new Image();
   img.src = "public/user1-128x128.jpg"; //sticker muss immer kleiner sein, als das hintergrundbild
   img.onload = () => {
-    const sticker = {type:"sticker",image:img,x:10+img.width,y:10+img.height};
+    const sticker = {type:"sticker",image:img,x:10,y:10};
     allElements.value.push(sticker);
-    selectedElement.value = sticker;
-    drawSticker(ctx, img)
+    drawSticker(ctx, sticker)
     makeMovable(canvas)
   };
 }
 
 const drawSticker = (context, sticker) => {
-  if (selectedElement.value !== null) {
-    context.drawImage(sticker,
-        selectedElement.value.x-(sticker.width/2),
-        selectedElement.value.y-(sticker.height/2));
-    console.log("Sticker draw call");
-  }
+  context.drawImage(sticker.image, sticker.x, sticker.y);
+  console.log("Sticker draw call");
 }
 
 //canvas methods
@@ -79,7 +71,7 @@ const redrawCanvas = () => { // also usable as reset
     ctx.drawImage(img,0,0, canvas.width, canvas.height);
     allElements.value.forEach(element => {
       if (element.type == "sticker") {
-        drawSticker(ctx,element.image);
+        drawSticker(ctx,element);
       }
     });
   }
@@ -95,14 +87,13 @@ const makeMovable = (canvas) => {
   canvas.onmousedown = function(event) {
     cursorX.value = (event.clientX - rect.left) * scaleFactorX;
     cursorY.value = (event.clientY - rect.top) * scaleFactorY;
-
-
-    if (cursorX.value >= (selectedElement.value.x - selectedElement.value.image.width/2) && //error here
-        cursorX.value <= (selectedElement.value.x + selectedElement.value.image.width/2) &&
-        cursorY.value >= (selectedElement.value.y - selectedElement.value.image.height/2) &&
-        cursorY.value <= (selectedElement.value.y + selectedElement.value.image.height/2)) {
-      isDraggable = true;
-    }
+    allElements.value.forEach(element => {
+      if (isPointInsideElement(cursorX.value, cursorY.value, element)) {
+        selectedElement.value = element;
+        console.log("selected Element")
+        isDraggable = true;
+      }
+    });
   };
 
   canvas.onmousemove = function(event) {
@@ -118,12 +109,9 @@ const makeMovable = (canvas) => {
     cursorX.value = (event.clientX - rect.left) * scaleFactorX;
     cursorY.value = (event.clientY - rect.top) * scaleFactorY;
     if (isDraggable) {
-      if (selectedElement.value.type == "sticker") {
-        selectedElement.value.x = cursorX.value
-        selectedElement.value.y = cursorY.value
-        redrawCanvas()
-      }
-      if(selectedElement.value.type == "text") {}
+      selectedElement.value.x = cursorX.value - selectedElement.value.image.width/2;
+      selectedElement.value.y = cursorY.value - selectedElement.value.image.height/2;
+      redrawCanvas();
     }
     isDraggable = false;
   };
@@ -132,6 +120,15 @@ const makeMovable = (canvas) => {
     isDraggable = false;
   };
 }
+
+const isPointInsideElement = (pointX, pointY, element) => {
+  return (
+      pointX >= element.x &&
+      pointX <= element.x + element.image.width &&
+      pointY >= element.y &&
+      pointY <= element.y + element.image.height
+  );
+};
 
 //required for persistence
 onMounted(() => {

@@ -24,15 +24,10 @@ const updateDisplayEventListener = () => {
 const buttonText = () => {
   createTextElement();
   console.log("pressed Text button");
-  ///////////////////////////////////
-  //const canvas = document.getElementById("canvas");
-  //const ctx = canvas.getContext("2d");
-  //ctx.font = "50px sans-serif";
-  //ctx.fillText("Click to edit", cursorX.value, cursorY.value);
 };
 
 const buttonSticker = () => {
-  console.log("pressed Sticker button");
+  createStickerElement()
 };
 
 const buttonSave = () => {
@@ -40,30 +35,41 @@ const buttonSave = () => {
 };
 
 //button functionality
-const createTextElement = () => {
+const createTextElement = () => { //type = "text"
   const canvas = document.getElementById("canvas");
   if (canvas) {
-    //const textarea = document.createElement(('textarea'));
-    //textarea.value = "Click to edit";
-    //textarea.style.position = "absolute";
-    //textarea.style.left = "10px";
-    //textarea.style.top = "10px";
-//
-    //canvas.appendChild(textarea);
-//
-    //makeDraggable(textarea);
-
+    const textarea = null
     allElements.value.push(textarea);
     selectedElement.value = textarea;
   }
 };
 
-//canvas methods
-const redrawCanvas = () => {
+const createStickerElement = () => {
   const canvas = document.getElementById("canvas");
-  canvas.addEventListener("mousedown", function(e) {
-    handleCanvasClick(e,canvas);
-  });
+  const ctx = canvas.getContext("2d");
+  const img = new Image();
+  img.src = "public/user1-128x128.jpg"; //sticker muss immer kleiner sein, als das hintergrundbild
+  img.onload = () => {
+    const sticker = {type:"sticker",image:img,x:10+img.width,y:10+img.height};
+    allElements.value.push(sticker);
+    selectedElement.value = sticker;
+    drawSticker(ctx, img)
+    makeMovable(canvas)
+  };
+}
+
+const drawSticker = (context, sticker) => {
+  if (selectedElement.value !== null) {
+    context.drawImage(sticker,
+        selectedElement.value.x-(sticker.width/2),
+        selectedElement.value.y-(sticker.height/2));
+    console.log("Sticker draw call");
+  }
+}
+
+//canvas methods
+const redrawCanvas = () => { // also usable as reset
+  const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const img = new Image();
   img.src = image.value;
@@ -71,48 +77,61 @@ const redrawCanvas = () => {
     canvas.height = img.height;
     canvas.width = img.width;
     ctx.drawImage(img,0,0, canvas.width, canvas.height);
+    allElements.value.forEach(element => {
+      if (element.type == "sticker") {
+        drawSticker(ctx,element.image);
+      }
+    });
   }
   console.log("redrew canvas");
 };
 
-const handleCanvasClick = (event, canvas) => {
-  //const canvas = document.getElementById("canvas");
+const makeMovable = (canvas) => {
   const rect = canvas.getBoundingClientRect();
   const scaleFactorX = canvas.width / rect.width;
   const scaleFactorY = canvas.height / rect.height;
+  var isDraggable = false;
 
-  cursorX.value = (event.clientX - rect.left) * scaleFactorX;
-  cursorY.value = (event.clientY - rect.top) * scaleFactorY;
-  window.dispatchEvent(new Event('updateCursorPosition')); //maybe irrelevant
-};
+  canvas.onmousedown = function(event) {
+    cursorX.value = (event.clientX - rect.left) * scaleFactorX;
+    cursorY.value = (event.clientY - rect.top) * scaleFactorY;
 
-//const makeDraggable = (element) => { //// anschauen und überarbeiten
-//  let isDragging = false;
-//  let offsetX, offsetY;
-//
-//  element.addEventListener('mousedown', (e) => {
-//    isDragging = true;
-//    offsetX = e.clientX - element.getBoundingClientRect().left;
-//    offsetY = e.clientY - element.getBoundingClientRect().top;
-//
-//    // Set the selected element
-//    selectedElement.value = element;
-//  });
-//
-//  document.addEventListener('mousemove', (e) => {
-//    if (isDragging) {
-//      const x = e.clientX - offsetX;
-//      const y = e.clientY - offsetY;
-//      element.style.left = `${x}px`;
-//      element.style.top = `${y}px`;
-//    }
-//  });
-//
-//  document.addEventListener('mouseup', () => {
-//    isDragging = false;
-//  });
-//};
-//
+
+    if (cursorX.value >= (selectedElement.value.x - selectedElement.value.image.width/2) && //error here
+        cursorX.value <= (selectedElement.value.x + selectedElement.value.image.width/2) &&
+        cursorY.value >= (selectedElement.value.y - selectedElement.value.image.height/2) &&
+        cursorY.value <= (selectedElement.value.y + selectedElement.value.image.height/2)) {
+      isDraggable = true;
+    }
+  };
+
+  canvas.onmousemove = function(event) {
+    if (isDraggable) {
+      cursorX.value = (event.clientX - rect.left) * scaleFactorX;
+      cursorY.value = (event.clientY - rect.top) * scaleFactorY;
+      selectedElement.value.x = cursorX.value
+      selectedElement.value.y = cursorY.value
+    }
+  };
+
+  canvas.onmouseup = function(event) {
+    cursorX.value = (event.clientX - rect.left) * scaleFactorX;
+    cursorY.value = (event.clientY - rect.top) * scaleFactorY;
+    if (isDraggable) {
+      if (selectedElement.value.type == "sticker") {
+        selectedElement.value.x = cursorX.value
+        selectedElement.value.y = cursorY.value
+        redrawCanvas()
+      }
+      if(selectedElement.value.type == "text") {}
+    }
+    isDraggable = false;
+  };
+
+  canvas.onmouseout = function(e) {
+    isDraggable = false;
+  };
+}
 
 //required for persistence
 onMounted(() => {

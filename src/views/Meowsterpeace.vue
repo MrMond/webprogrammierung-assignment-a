@@ -3,22 +3,21 @@
   <v-container>
     <h1>Meowsterpeace Gallery</h1>
     <v-row>
-      <v-col v-for="i in 9" :key="i" cols="auto">
-        <div class="gallery-card-container" @click="showModal(i)">
-          <PostCard :title="'Post no ' + i" :imgSrc="'/Screenshot (10).png'"/>
+      <v-col v-for="(card, index) in galleryData" :key="index" cols="auto">
+        <div class="gallery-card-container" @click="showModal(index)">
+          <PostCard :title="card.title" :imgSrc="card.imgSrc"/>
         </div>
       </v-col>
     </v-row>
 
     <!-- Modal for enlarged view -->
-    <v-dialog v-model="showModalDialog" max-width="800" max-height="800">
+    <v-dialog v-model="showModalDialog" max-width="800">
       <template v-slot:activator="{ on, attrs }">
         <div v-bind="attrs" v-on="on"></div>
       </template>
       <v-card>
-        <v-card-title>{{ selectedPostCard.title }}</v-card-title>
         <v-card-text>
-          <PostCard :title="selectedPostCard.title" :imgSrc="'/Screenshot (10).png'" :largeView="true"/>
+          <PostCard :title="selectedPostCard.title" :imgSrc="selectedPostCard.imgSrc" :largeView="true"/>
         </v-card-text>
         <v-card-actions>
           <v-btn @click="closeModal">Close</v-btn>
@@ -35,8 +34,16 @@ import { ref } from "vue";
 const showModalDialog = ref(false);
 const selectedPostCard = ref(null);
 
+const galleryData = ref([
+  { title: "Cat in a Box", imgSrc: "/cat_in_a_box.jpg" },
+  { title: "Fluffy Kitty", imgSrc: "/fluffy_kitty.jpg" },
+  { title: "Cute Kitten", imgSrc: "/cute_kitten.jpg" },
+  { title: "Sleeping Cat", imgSrc: "/sleeping_cat.jpg" },
+  { title: "Adorable Cat", imgSrc: "/adorable_cat.jpg" },
+]);
+
 const showModal = (index) => {
-  selectedPostCard.value = { title: `Post no ${index}` };
+  selectedPostCard.value = { ...galleryData.value[index] };
   showModalDialog.value = true;
 };
 

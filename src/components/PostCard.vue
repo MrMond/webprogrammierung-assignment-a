@@ -11,7 +11,7 @@ const props = defineProps(['title', 'imgSrc', 'largeView'])
       :style="{cursor: largeView ? 'auto' : 'pointer'}"
   >
     <VCardTitle>{{ title }}</VCardTitle>
-    <VDivider v-if="largeView"/>
+    <VDivider />
     <VImg v-if="imgSrc" :src="imgSrc" :alt="title" :height="largeView ? '100%' : 'auto'" :width="largeView ? '100%' : 'auto'" />
   </VCard>
 </template>

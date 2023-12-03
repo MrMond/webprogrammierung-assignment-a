@@ -1,17 +1,17 @@
 <!-- PostCard.vue -->
 <script setup>
-const props = defineProps(['title'])
+const props = defineProps(['title', 'imgSrc', 'largeView'])
 </script>
 
 <template>
   <VCard
       class="mx-auto"
-      max-width="280"
-      :title="props.title"
+      :max-width="largeView ? 600 : 280"
+      :height="largeView ? 'auto' : 200"
+      :style="{cursor: largeView ? 'auto' : 'pointer'}"
   >
-    <!-- Hier könnten weitere Inhalte der Karte platziert werden -->
-    <!-- <v-badge content="Beaches" color="error"/> -->
-    <VDivider/>
-    <VImg src="/Screenshot (10).png" alt="Your Image"/>
+    <VCardTitle>{{ title }}</VCardTitle>
+    <VDivider />
+    <VImg v-if="imgSrc" :src="imgSrc" :alt="title" :height="largeView ? '100%' : 'auto'" :width="largeView ? '100%' : 'auto'" />
   </VCard>
 </template>

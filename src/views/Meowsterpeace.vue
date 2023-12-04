@@ -75,7 +75,6 @@ const updateLikes = (index, newLikes) => {
 const storeImage = () => { // @Lukas wird ausgeführt wenn das Event "saveImage" ausgelöst wird, also wenn der Knopf gedrückt wird
   const image = sessionStorage.getItem('uploadedImage');
   galleryData.value.push({ title: "@Lukas titel muss noch implementiert werden", img: image, likes: 0 }); // @Lukas ich speicher hier das bild selbst, deswegen hab ich die property auf img umbenannt
-  //@Lukas hier nochmal neu sortieren
   const convertedData = []
   galleryData.value.forEach(element => {
     convertedData.push({title:element.title,likes:element.likes,image:getBase64Image(element.img)}) // @Lukas sollte gefixt sein wenn alle Objekte meinem neuen Namenschema folgen

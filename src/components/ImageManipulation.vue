@@ -30,17 +30,25 @@ const buttonSticker = () => {
 };
 
 const buttonSave = () => {
-  console.log(`pressed Save button; len(allElements): ${allElements.value.length}`);
-  // alles auf der Canvas zusammenfügen und als Bild in die session storage
-
-  //window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
+  console.log(`Number of saved Elements: ${allElements.value.length}`);
+  const canvas = document.getElementById("canvas");
+  const combinedImage = new Image();
+  combinedImage.src = canvas.toDataURL();
+  combinedImage.onload = () => {
+    sessionStorage.setItem('uploadedImage', combinedImage.src);
+    allElements.value = [];
+    selectedElement.value = null;
+    window.dispatchEvent(new Event('updateDisplay'));
+    //window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
+    alert("Saved your changes. The image is now available in the gallery.")
+  }
 };
 
 //button functionality
 const createTextElement = () => { //type = "text"
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
-  const text = "Text-element";
+  const text = "click to edit";
   const textarea = {type:"text",text:text,x:10,y:10,width:0,height:0};
   allElements.value.push(textarea);
   drawTextarea(ctx, textarea);
@@ -172,9 +180,35 @@ const isPointInsideElement = (pointX, pointY, element) => {
   }
 };
 
+const readKeyboardInput = (event) => {
+  if (selectedElement.value) {
+    if (selectedElement.value.type == "text"){
+      const keyPressed = event.key;
+      // add backspace functionality
+      switch (keyPressed) {
+        case "Backspace":
+          selectedElement.value.text = selectedElement.value.text.slice(0,-1);
+          redrawCanvas();
+          break;
+        case "Tab":
+          selectedElement.value.text += "   ";
+          redrawCanvas();
+          break;
+        default:
+          if (keyPressed.length == 1) {
+            selectedElement.value.text += keyPressed;
+            redrawCanvas();
+          }
+          break;
+      }
+    }
+  }
+};
+
 //required for persistence
 onMounted(() => {
   window.addEventListener('updateDisplay', updateDisplayEventListener);
+  window.addEventListener('keydown', readKeyboardInput);
   if (imageAvailable.value) {
     redrawCanvas();
   }
@@ -182,6 +216,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.removeEventListener('updateDisplay', updateDisplayEventListener);
+  window.removeEventListener('keydown', readKeyboardInput);
 });
 </script>
 

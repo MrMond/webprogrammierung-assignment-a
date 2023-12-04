@@ -29,7 +29,7 @@ import { ref } from 'vue';
 <style scoped>
 .catchphrase {
   color: white;
-  font-family: 'Dancing Script', cursive; /* Ersetzen Sie 'Neue Schriftart' durch den Namen Ihrer gewünschten Schriftart */
+  font-family: 'DialogInput';
   font-size: 45px;
   margin-bottom: 20px;
 }

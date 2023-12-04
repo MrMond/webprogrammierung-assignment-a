@@ -13,13 +13,13 @@
     <VNavigationDrawer mobile-breakpoint="sm" v-model="drawer" class="white-background">
       <VList>
         <!-- Navigationspunkte -->
-        <VListItem :prepend-icon="BlogIcon" link to="/home" @click="handleNavigation">
+        <VListItem prepend-icon="mdi-home" link to="/home" @click="handleNavigation">
           Home
         </VListItem>
-        <VListItem prepend-icon="mdi-shape" link to="/Meowsterpeace Gallery" @click="handleNavigation">
+        <VListItem prepend-icon="mdi-image" link to="/Meowsterpeace Gallery" @click="handleNavigation">
           Meowsterpeace Gallery
         </VListItem>
-        <VListItem prepend-icon="mdi-account-multiple" link to="/CatMemeGenerator" @click="handleNavigation">
+        <VListItem prepend-icon="mdi-paw" link to="/CatMemeGenerator" @click="handleNavigation">
           CatMemeGenerator
         </VListItem>
       </VList>

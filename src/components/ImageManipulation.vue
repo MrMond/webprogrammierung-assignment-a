@@ -23,7 +23,6 @@ const updateDisplayEventListener = () => {
 //button listeners
 const buttonText = () => {
   createTextElement();
-  console.log("pressed Text button");
 };
 
 const buttonSticker = () => {
@@ -34,13 +33,18 @@ const buttonSave = () => {
   console.log(`pressed Save button; len(allElements): ${allElements.value.length}`);
   // alles auf der Canvas zusammenfügen und als Bild in die session storage
 
-  window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
+  //window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
 };
 
 //button functionality
 const createTextElement = () => { //type = "text"
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
+  const text = "Text-element";
+  const textarea = {type:"text",text:text,x:10,y:10,width:0,height:0};
+  allElements.value.push(textarea);
+  drawTextarea(ctx, textarea);
+  makeMovable(canvas);
 };
 
 const createStickerElement = () => {
@@ -51,15 +55,24 @@ const createStickerElement = () => {
   img.onload = () => {
     const sticker = {type:"sticker",image:img,x:10,y:10};
     allElements.value.push(sticker);
-    drawSticker(ctx, sticker)
-    makeMovable(canvas)
+    drawSticker(ctx, sticker);
+    makeMovable(canvas);
   };
 }
 
 const drawSticker = (context, sticker) => {
   context.drawImage(sticker.image, sticker.x, sticker.y);
   console.log("Sticker draw call");
-}
+};
+
+const drawTextarea = (context, textarea) => {
+  const textSize = 50;
+  context.font = `${textSize}px Lobster`;
+  context.fillText(textarea.text,textarea.x,textarea.y+textSize);
+  const textMetrics = context.measureText(textarea.text);
+  textarea.height = textSize;
+  textarea.width = textMetrics.width;
+};
 
 //canvas methods
 const redrawCanvas = () => { // also usable as reset
@@ -72,8 +85,13 @@ const redrawCanvas = () => { // also usable as reset
     canvas.width = img.width;
     ctx.drawImage(img,0,0, canvas.width, canvas.height);
     allElements.value.forEach(element => {
-      if (element.type == "sticker") {
-        drawSticker(ctx,element);
+      switch (element.type) {
+        case "sticker":
+          drawSticker(ctx,element);
+          break;
+        case "text":
+          drawTextarea(ctx,element)
+          break;
       }
     });
   }
@@ -111,8 +129,20 @@ const makeMovable = (canvas) => {
     cursorX.value = (event.clientX - rect.left) * scaleFactorX;
     cursorY.value = (event.clientY - rect.top) * scaleFactorY;
     if (isDraggable) {
-      selectedElement.value.x = cursorX.value - selectedElement.value.image.width/2;
-      selectedElement.value.y = cursorY.value - selectedElement.value.image.height/2;
+      switch (selectedElement.value.type){
+        case "sticker":
+          selectedElement.value.x = cursorX.value - selectedElement.value.image.width/2;
+          selectedElement.value.y = cursorY.value - selectedElement.value.image.height/2;
+          break;
+        case "text":
+          selectedElement.value.x = cursorX.value - selectedElement.value.width/2;
+          selectedElement.value.y = cursorY.value - selectedElement.value.height/2;
+          break;
+        default:
+          selectedElement.value.x = cursorX.value;
+          selectedElement.value.y = cursorY.value;
+          break;
+      }
       redrawCanvas();
     }
     isDraggable = false;
@@ -124,12 +154,22 @@ const makeMovable = (canvas) => {
 }
 
 const isPointInsideElement = (pointX, pointY, element) => {
-  return (
-      pointX >= element.x &&
-      pointX <= element.x + element.image.width &&
-      pointY >= element.y &&
-      pointY <= element.y + element.image.height
-  );
+  switch (element.type) {
+    case "sticker":
+      return (
+          pointX >= element.x &&
+          pointX <= element.x + element.image.width &&
+          pointY >= element.y &&
+          pointY <= element.y + element.image.height
+      );
+    case "text":
+      return (
+          pointX >= element.x &&
+          pointX <= element.x + element.width &&
+          pointY >= element.y &&
+          pointY <= element.y + element.height
+      );
+  }
 };
 
 //required for persistence

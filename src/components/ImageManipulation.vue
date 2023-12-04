@@ -32,7 +32,9 @@ const buttonSticker = () => {
 
 const buttonSave = () => {
   console.log(`pressed Save button; len(allElements): ${allElements.value.length}`);
-  redrawCanvas()
+  // alles auf der Canvas zusammenfügen und als Bild in die session storage
+
+  window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
 };
 
 //button functionality

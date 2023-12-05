@@ -22,30 +22,47 @@ const updateDisplayEventListener = () => {
 
 //button listeners
 const buttonText = () => {
-  createTextElement();
+  if(imageAvailable()) {
+    createTextElement();
+  }
 };
 
 const buttonSticker = () => {
-  createStickerElement()
+  if(imageAvailable()) {
+    createStickerElement()
+  }
 };
 
 const buttonSave = () => {
-  console.log(`Number of saved Elements: ${allElements.value.length}`);
-  const canvas = document.getElementById("canvas");
-  const combinedImage = new Image();
-  combinedImage.src = canvas.toDataURL();
-  combinedImage.onload = () => {
-    sessionStorage.setItem('uploadedImage', combinedImage.src);
-    allElements.value = [];
-    selectedElement.value = null;
-    window.dispatchEvent(new Event('updateDisplay'));
-    //window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
-    alert("Saved your changes. The image is now available in the gallery.")
+  if(imageAvailable()) {
+    try {
+      console.log(`Number of saved Elements: ${allElements.value.length}`);
+      const canvas = document.getElementById("canvas");
+      const combinedImage = new Image();
+      combinedImage.src = canvas.toDataURL();
+      combinedImage.onload = () => {
+        try {
+          sessionStorage.setItem('uploadedImage',null)
+          sessionStorage.setItem('uploadedImage', combinedImage.src);
+          allElements.value = [];
+          selectedElement.value = null;
+        } catch (e) {
+          console.log("Saving failed, cache full");
+          alert("Your browsers cache overflowed. Try again with a smaller image.");
+        }
+        window.dispatchEvent(new Event('updateDisplay'));
+        //window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
+        alert("Saved your changes. The image is now available in the gallery.");
+      }
+    } catch (e) {
+      console.log("Saving failed, cache full");
+      alert("Your browsers cache overflowed. Try again with a smaller image.");
+    }
   }
 };
 
 //button functionality
-const createTextElement = () => { //type = "text"
+const createTextElement = () => {
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const text = "click to edit";
@@ -234,7 +251,7 @@ onBeforeUnmount(() => {
 <style scoped>
 .image-manipulation canvas {
   max-width: 100%;
-  max-height: 2000px;
+  max-height: 800px;
   background-color: rgba(255, 255, 255, 0.15);
 }
 

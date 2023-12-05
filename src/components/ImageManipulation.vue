@@ -22,19 +22,19 @@ const updateDisplayEventListener = () => {
 
 //button listeners
 const buttonText = () => {
-  if(imageAvailable()) {
+  if(!!image.value) {
     createTextElement();
   }
 };
 
 const buttonSticker = () => {
-  if(imageAvailable()) {
+  if(!!image.value) {
     createStickerElement()
   }
 };
 
 const buttonSave = () => {
-  if(imageAvailable()) {
+  if(!!image.value) {
     try {
       console.log(`Number of saved Elements: ${allElements.value.length}`);
       const canvas = document.getElementById("canvas");
@@ -76,7 +76,7 @@ const createStickerElement = () => {
   const canvas = document.getElementById("canvas");
   const ctx = canvas.getContext("2d");
   const img = new Image();
-  img.src = "public/user1-128x128.jpg"; //sticker muss immer kleiner sein, als das hintergrundbild
+  img.src = "public/angry.png"; //sticker muss immer kleiner sein, als das hintergrundbild
   img.onload = () => {
     const sticker = {type:"sticker",image:img,x:10,y:10};
     allElements.value.push(sticker);

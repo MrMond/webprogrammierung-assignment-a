@@ -66,18 +66,21 @@ const sortedGalleryData = computed(() => {
 const updateLikes = (index, newLikes) => {
   if (index !== null && index >= 0 && index < galleryData.value.length) {
     galleryData.value[index].likes = newLikes;
-    // Aktualisiere die sortierte Liste, um die Reihenfolge nach Likes zu erhalten
     sortedGalleryData.value = [...galleryData.value].sort((a, b) => b.likes - a.likes);
   }
 };
 
+const redrawGallery = () => {
+  
+}
+
 // persistence
 const storeImage = () => { // @Lukas wird ausgeführt wenn das Event "saveImage" ausgelöst wird, also wenn der Knopf gedrückt wird
   const image = sessionStorage.getItem('uploadedImage');
-  galleryData.value.push({ title: "@Lukas titel muss noch implementiert werden", img: image, likes: 0 }); // @Lukas ich speicher hier das bild selbst, deswegen hab ich die property auf img umbenannt
+  galleryData.value.push({ title: "@Lukas titel muss noch implementiert werden", imgSrc: image, likes: 0 }); // @Lukas ich speicher hier das bild selbst, deswegen hab ich die property auf img umbenannt
   const convertedData = []
   galleryData.value.forEach(element => {
-    convertedData.push({title:element.title,likes:element.likes,image:getBase64Image(element.img)}) // @Lukas sollte gefixt sein wenn alle Objekte meinem neuen Namenschema folgen
+    convertedData.push({title:element.title,likes:element.likes,image:getBase64Image(element.imgSrc)}) // @Lukas sollte gefixt sein wenn alle Objekte meinem neuen Namenschema folgen
   });
   localStorage.setItem('gallery_data', JSON.stringify(convertedData));
 };
@@ -99,11 +102,10 @@ const loadGalleryData = () => {
     galleryData.value = JSON.parse(storedData);
   }
 };
-// @Lukas die Bilder solltest du dann noch mithilfe von img.src zurückbekommen und daraus kannst du deine
+// @Lukas die Bilder solltest du dann noch mithilfe von img.src zurückbekommen und daraus kannst du deine Galerie basteln
 
 onMounted( () => {
   window.addEventListener('saveImage', storeImage);
- // @Lukas jetzt hier den Speicher auslesen und deinem array hinzufügen:
   loadGalleryData(); // @Lukas du musst noch neu sortieren und die einzelnen posts anzeigen lassen
 });
 

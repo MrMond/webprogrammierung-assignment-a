@@ -51,7 +51,7 @@ const buttonSave = () => {
           alert("Your browsers cache overflowed. Try again with a smaller image.");
         }
         window.dispatchEvent(new Event('updateDisplay'));
-        //window.dispatchEvent(new Event('saveImage')); //send update to Meowsterpeace.vue
+        window.dispatchEvent(new Event('saveImage'));
         alert("Saved your changes. The image is now available in the gallery.");
       }
     } catch (e) {

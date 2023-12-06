@@ -149,7 +149,23 @@ onBeforeUnmount(() => {
   // Cleanup if needed
 });
 
+const openPostcardDetails = (event) => {
+  // Hier öffnest du das Dialogfenster für die Eingabe von Titel und Likes
+  const { title, imgSrc } = event.detail;
+  if (title && imgSrc) {
+    selectedPostCard.value = { title, imgSrc, likes: 0 };
+    showModalDialog.value = true;
+
+    // Füge die neue Postkarte zum galleryData-Array hinzu
+    galleryData.value.push({ title, imgSrc, likes: 0 });
+
+    // Update local storage
+    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+  }
+};
+window.addEventListener('openPostcardDetails', openPostcardDetails);
 </script>
+
 
 <style scoped>
 .gallery-card-container {

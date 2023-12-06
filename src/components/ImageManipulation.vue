@@ -34,7 +34,7 @@ const buttonSticker = () => {
 };
 
 const buttonSave = () => {
-  if(!!image.value) {
+  if (!!image.value) {
     try {
       console.log(`Number of saved Elements: ${allElements.value.length}`);
       const canvas = document.getElementById("canvas");
@@ -42,24 +42,32 @@ const buttonSave = () => {
       combinedImage.src = canvas.toDataURL();
       combinedImage.onload = () => {
         try {
-          sessionStorage.setItem('uploadedImage',null)
+          sessionStorage.setItem('uploadedImage', null);
           sessionStorage.setItem('uploadedImage', combinedImage.src);
           allElements.value = [];
           selectedElement.value = null;
         } catch (e) {
           console.log("Saving failed, cache full");
-          alert("Your browsers cache overflowed. Try again with a smaller image.");
+          alert("Your browser's cache overflowed. Try again with a smaller image.");
         }
         window.dispatchEvent(new Event('updateDisplay'));
         window.dispatchEvent(new Event('saveImage'));
+
+        // Neues Event "openPostcardDetails" für die Gallery-Komponente auslösen
+        const title = prompt("Enter the title for the new postcard:");
+        if (title) {
+          window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } }));
+        }
+
         alert("Saved your changes. The image is now available in the gallery.");
-      }
+      };
     } catch (e) {
       console.log("Saving failed, cache full");
-      alert("Your browsers cache overflowed. Try again with a smaller image.");
+      alert("Your browser's cache overflowed. Try again with a smaller image.");
     }
   }
 };
+
 
 //button functionality
 const createTextElement = () => {

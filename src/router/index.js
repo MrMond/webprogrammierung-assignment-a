@@ -3,6 +3,7 @@ import CatMemeGenerator from "@/views/Generator.vue";
 import Meowsterpeace_Gallery from "@/views/Meowsterpeace.vue";
 import Read from "@/views/posts/Read.vue";
 import Create from "@/views/posts/Create.vue";
+import FAQPage from "@/views/CommonCuriosities.vue";
 
 const routes = [
   {path: '/', component: home},
@@ -14,5 +15,6 @@ const routes = [
   {path: '/home/delete', component: home},
   {path: '/MeowsterpeaceGallery', component: Meowsterpeace_Gallery},
   {path: '/CatMemeGenerator', component: CatMemeGenerator},
+  {path: '/CommonCuriosities', component: FAQPage},
 ];
 export default routes;

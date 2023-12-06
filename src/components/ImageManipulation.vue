@@ -1,13 +1,11 @@
-
 <script>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-
 export default {
   setup() {
-    //read UserInputs from text field
-    const userInput = ref('');
-    //read UserInput from sticker selection
-    const selectedSticker = ref('');
+    //sticker selection
+    const stickerDialog = ref(false);
+    const stickers = ref(['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R'])
+    const selectedSticker = ref(null)
     //setup of image
     const image = ref(sessionStorage.getItem('uploadedImage'));
     const imageAvailable = ref(!!image.value);
@@ -16,7 +14,6 @@ export default {
     const cursorY = ref(0);
     const selectedElement = ref(null);
     const allElements = ref([]);
-
     const updateImage = () => {
       image.value = sessionStorage.getItem('uploadedImage');
       imageAvailable.value = !!image.value;
@@ -36,14 +33,8 @@ export default {
       }
     };
 
-    const buttonSticker = () => {
-      if(!!image.value) {
-        createStickerElement()
-      }
-    };
-
     const buttonSave = () => {
-      if(!!image.value) {
+      if (!!image.value) {
         try {
           console.log(`Number of saved Elements: ${allElements.value.length}`);
           const canvas = document.getElementById("canvas");
@@ -51,25 +42,49 @@ export default {
           combinedImage.src = canvas.toDataURL();
           combinedImage.onload = () => {
             try {
-              sessionStorage.setItem('uploadedImage',null)
-              sessionStorage.setItem('uploadedImage',combinedImage.src);
-              sessionStorage.setItem('titel',userInput);
+              sessionStorage.setItem('uploadedImage', null);
+              sessionStorage.setItem('uploadedImage', combinedImage.src);
               allElements.value = [];
               selectedElement.value = null;
             } catch (e) {
               console.log("Saving failed, cache full");
-              alert("Your browsers cache overflowed. Try again with a smaller image.");
+              alert("Your browser's cache overflowed. Try again with a smaller image.");
             }
             window.dispatchEvent(new Event('updateDisplay'));
             window.dispatchEvent(new Event('saveImage'));
+            const title = prompt("Enter the title for the new postcard:");
+            if (title) {
+              window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } }));
+            }
+
             alert("Saved your changes. The image is now available in the gallery.");
-          }
+          };
         } catch (e) {
           console.log("Saving failed, cache full");
-          alert("Your browsers cache overflowed. Try again with a smaller image.");
+          alert("Your browser's cache overflowed. Try again with a smaller image.");
         }
       }
     };
+
+    const openDialog = () => {
+      stickerDialog.value = true;
+    };
+
+    const closeDialog = () => {
+      stickerDialog.value = false;
+    };
+
+    const selectSticker = (selection) =>  {
+      if(!!image.value) {
+        switch (selection) {
+          default:
+            selectedSticker.value = "public/user1-128x128.jpg"
+            break;
+        }
+        closeDialog();
+        createStickerElement()
+      }
+    }
 
     //button functionality
     const createTextElement = () => {
@@ -86,7 +101,7 @@ export default {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = "public/user1-128x128.jpg"; //sticker muss immer kleiner sein, als das hintergrundbild
+      img.src = selectedSticker.value;
       img.onload = () => {
         const sticker = {type:"sticker",image:img,x:10,y:10};
         allElements.value.push(sticker);
@@ -245,13 +260,15 @@ export default {
       window.removeEventListener('updateDisplay', updateDisplayEventListener);
       window.removeEventListener('keydown', readKeyboardInput);
     });
-
     return {
-      userInput,
       imageAvailable,
       buttonText,
-      buttonSticker,
       buttonSave,
+      stickerDialog,
+      stickers,
+      openDialog,
+      closeDialog,
+      selectSticker,
     }
   }
 };
@@ -259,15 +276,28 @@ export default {
 
 <template>
   <v-container v-if = "imageAvailable" class="button-container">
-    <v-text-field label="Name your creation" v-model="userInput"></v-text-field>
-    <button @click="buttonText"> Text </button>
-    <v-select
-  label="Sticker"
-  :items="['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R']"
-  v-model="selectedSticker"
-></v-select>
-    <button @click="buttonSticker"> Sticker </button>
-    <button @click="buttonSave"> Save </button>
+    <v-btn @click="buttonText"> Text </v-btn>
+    <v-btn @click="openDialog">Stickers</v-btn>
+
+    <v-dialog v-model="stickerDialog" max-width="400">
+      <v-card>
+        <v-card-title>Select Sticker</v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item v-for="(sticker, index) in stickers" :key="index">
+              <v-list-item-content @click="selectSticker(sticker)">
+                {{ sticker }}
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeDialog">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-btn @click="buttonSave"> Save </v-btn>
   </v-container>
   <v-container class = "image-manipulation">
     <canvas id="canvas" width="0" height="0"></canvas>
@@ -276,8 +306,8 @@ export default {
 
 <style scoped>
 .image-manipulation canvas {
-  max-width: 95vw;
-  /*max-height: 800px;*/
+  max-width: 80vw;
+  max-height: 65vh;
   background-color: rgba(255, 255, 255, 0.25);
 }
 

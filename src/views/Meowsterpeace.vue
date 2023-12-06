@@ -11,6 +11,8 @@
       </v-col>
     </v-row>
 
+    <v-btn @click="showAddPostcardDialog = true">Neue Postcard hinzufügen</v-btn>
+
     <!-- Modal for enlarged view -->
     <v-dialog v-model="showModalDialog" max-width="800">
       <template v-slot:activator="{ on, attrs }">
@@ -27,7 +29,24 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="closeModal">Close</v-btn>
+          <v-btn @click="closeModal">Schließen</v-btn>
+          <!-- Neuer Button zum Entfernen -->
+          <v-btn @click="removePostcard">Entfernen</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="showAddPostcardDialog" max-width="400">
+      <v-card>
+        <v-card-title>Neue Postcard hinzufügen</v-card-title>
+        <v-card-text>
+          <v-text-field v-model="newPostcard.title" label="Titel" />
+          <v-text-field v-model="newPostcard.imgSrc" label="Bild-URL" />
+          <v-text-field v-model="newPostcard.likes" label="Likes" />
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="addNewPostcard">Hinzufügen</v-btn>
+          <v-btn @click="cancelAddPostcard">Abbrechen</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -36,18 +55,14 @@
 
 <script setup>
 import PostCard from "@/components/PostCard.vue";
-import {ref, computed, onMounted, onBeforeUnmount} from "vue";
+import { ref, computed, onMounted, onBeforeUnmount } from "vue";
 
 const showModalDialog = ref(false);
+const showAddPostcardDialog = ref(false);
 const selectedPostCard = ref(null);
+const newPostcard = ref({ title: '', imgSrc: '' });
 
-const galleryData = ref([
-  { title: "Cat in a Box", imgSrc: "/cat_in_a_box.jpg", likes: 17 },
-  { title: "Fluffy Kitty", imgSrc: "/fluffy_kitty.jpg", likes: 5 },
-  { title: "Cute Kitten", imgSrc: "/cute_kitten.jpg", likes: 0 },
-  { title: "Sleeping Cat", imgSrc: "/sleeping_cat.jpg", likes: 13 },
-  { title: "Adorable Cat", imgSrc: "/adorable_cat.jpg", likes: 11 },
-]);
+const galleryData = ref(loadGalleryData());
 
 const showModal = (card) => {
   selectedPostCard.value = { ...card };
@@ -59,12 +74,58 @@ const closeModal = () => {
 };
 
 const updateLikes = (card, newLikes) => {
-  if (newLikes != null) {
-    card.likes = newLikes;
-    // Update the likes in galleryData
-    const index = galleryData.value.findIndex(item => item.title === card.title);
+  card.likes = newLikes;
+
+  // Update the likes in galleryData
+  const index = galleryData.value.findIndex(item => item.title === card.title);
+  if (index !== -1) {
+    galleryData.value[index].likes = newLikes;
+
+    // Update local storage
+    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+  }
+};
+
+
+const addNewPostcard = () => {
+  const { title } = newPostcard.value;
+
+  if (title) {
+    // Die imgSrc auf das zuletzt gespeicherte Bild setzen
+    const imgSrc = sessionStorage.getItem('uploadedImage') || "/default_image.jpg";
+    const newPost = { title, imgSrc, likes: 0 };
+
+    galleryData.value.push(newPost);
+
+    // Update local storage
+    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+
+    // Reset form und schließe den Dialog
+    newPostcard.value = { title: '', imgSrc: '' };
+    showAddPostcardDialog.value = false;
+  }
+};
+
+
+const cancelAddPostcard = () => {
+  newPostcard.value = { title: '', imgSrc: '' };
+  showAddPostcardDialog.value = false;
+};
+
+const removePostcard = () => {
+  if (selectedPostCard.value) {
+    // Find the index of the selected postcard
+    const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
+
     if (index !== -1) {
-      galleryData.value[index].likes = newLikes;
+      // Remove the postcard from galleryData
+      galleryData.value.splice(index, 1);
+
+      // Update local storage
+      localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+
+      // Close the modal
+      showModalDialog.value = false;
     }
   }
 };
@@ -73,46 +134,38 @@ const sortedGalleryData = computed(() => {
   return [...galleryData.value].sort((a, b) => b.likes - a.likes);
 });
 
-// persistence
-const storeImage = () => { // @Lukas wird ausgeführt wenn das Event "saveImage" ausgelöst wird, also wenn der Knopf gedrückt wird
-  const image = sessionStorage.getItem('uploadedImage');
-  galleryData.value.push({ title: "@Lukas titel muss noch implementiert werden", imgSrc: image, likes: 0 }); // @Lukas ich speicher hier das bild selbst, deswegen hab ich die property auf img umbenannt
-  const convertedData = []
-  galleryData.value.forEach(element => {
-    convertedData.push({title:element.title,likes:element.likes,image:getBase64Image(element.imgSrc)}) // @Lukas sollte gefixt sein wenn alle Objekte meinem neuen Namenschema folgen
-  });
-  localStorage.setItem('gallery_data', JSON.stringify(convertedData));
-};
-
-const getBase64Image = (img) => { //convert img into string
-  const canvas = document.createElement("canvas");
-  canvas.width = img.width;
-  canvas.height = img.height;
-
-  const ctx = canvas.getContext("2d");
-  ctx.drawImage(img, 0, 0);
-  const dataURL = canvas.toDataURL("image/png");
-  return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
-};
-
-const loadGalleryData = () => {
-  const storedData = localStorage.getItem('gallery_data');
-  if (storedData) {
-    galleryData.value = JSON.parse(storedData);
-  }
-};
-// @Lukas die Bilder solltest du dann noch mithilfe von img.src zurückbekommen und daraus kannst du deine Galerie basteln
-
-onMounted( () => {
-  window.addEventListener('saveImage', storeImage);
-  loadGalleryData(); // @Lukas du musst noch neu sortieren und die einzelnen posts anzeigen lassen
-});
+function loadGalleryData() {
+  const data = localStorage.getItem('gallery_data');
+  return data ? JSON.parse(data) : [
+    { title: "Cat in a Box", imgSrc: "/cat_in_a_box.jpg", likes: 17 },
+    { title: "Fluffy Kitty", imgSrc: "/fluffy_kitty.jpg", likes: 5 },
+    { title: "Cute Kitten", imgSrc: "/cute_kitten.jpg", likes: 0 },
+    { title: "Sleeping Cat", imgSrc: "/sleeping_cat.jpg", likes: 13 },
+    { title: "Adorable Cat", imgSrc: "/adorable_cat.jpg", likes: 11 },
+  ];
+}
 
 onBeforeUnmount(() => {
-  window.removeEventListener('saveImage', storeImage);
+  // Cleanup if needed
 });
 
+const openPostcardDetails = (event) => {
+  // Hier öffnest du das Dialogfenster für die Eingabe von Titel und Likes
+  const { title, imgSrc } = event.detail;
+  if (title && imgSrc) {
+    selectedPostCard.value = { title, imgSrc, likes: 0 };
+    showModalDialog.value = true;
+
+    // Füge die neue Postkarte zum galleryData-Array hinzu
+    galleryData.value.push({ title, imgSrc, likes: 0 });
+
+    // Update local storage
+    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+  }
+};
+window.addEventListener('openPostcardDetails', openPostcardDetails);
 </script>
+
 
 <style scoped>
 .gallery-card-container {

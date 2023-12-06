@@ -6,9 +6,10 @@ export default {
     };
   },
   mounted() {
-    // Retrieve image from sessionStorage when the component is mounted
-    this.image = sessionStorage.getItem('uploadedImage');
+    // Lade das Bild aus dem Local Storage
+    this.image = localStorage.getItem('uploadedImage');
   },
+
   methods: {
     handleDrop(event) {
       event.preventDefault();
@@ -66,5 +67,6 @@ export default {
   padding: 20px;
   text-align: center;
   background-color: rgba(255, 255, 255, 0.15);
+  max-width: 80vw;
 }
 </style>

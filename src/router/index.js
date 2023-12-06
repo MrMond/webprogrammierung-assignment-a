@@ -12,7 +12,7 @@ const routes = [
   {path: '/home', component: home},
   {path: '/home/save', component: home},
   {path: '/home/delete', component: home},
-  {path: '/Meowsterpeace Gallery', component: Meowsterpeace_Gallery},
+  {path: '/MeowsterpeaceGallery', component: Meowsterpeace_Gallery},
   {path: '/CatMemeGenerator', component: CatMemeGenerator},
 ];
 export default routes;

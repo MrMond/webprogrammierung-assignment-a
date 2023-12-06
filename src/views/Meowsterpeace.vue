@@ -36,7 +36,7 @@
 
 <script setup>
 import PostCard from "@/components/PostCard.vue";
-import { ref, computed } from "vue";
+import {ref, computed, onMounted, onBeforeUnmount} from "vue";
 
 const showModalDialog = ref(false);
 const selectedPostCard = ref(null);
@@ -72,6 +72,46 @@ const updateLikes = (card, newLikes) => {
 const sortedGalleryData = computed(() => {
   return [...galleryData.value].sort((a, b) => b.likes - a.likes);
 });
+
+// persistence
+const storeImage = () => { // @Lukas wird ausgeführt wenn das Event "saveImage" ausgelöst wird, also wenn der Knopf gedrückt wird
+  const image = sessionStorage.getItem('uploadedImage');
+  galleryData.value.push({ title: "@Lukas titel muss noch implementiert werden", imgSrc: image, likes: 0 }); // @Lukas ich speicher hier das bild selbst, deswegen hab ich die property auf img umbenannt
+  const convertedData = []
+  galleryData.value.forEach(element => {
+    convertedData.push({title:element.title,likes:element.likes,image:getBase64Image(element.imgSrc)}) // @Lukas sollte gefixt sein wenn alle Objekte meinem neuen Namenschema folgen
+  });
+  localStorage.setItem('gallery_data', JSON.stringify(convertedData));
+};
+
+const getBase64Image = (img) => { //convert img into string
+  const canvas = document.createElement("canvas");
+  canvas.width = img.width;
+  canvas.height = img.height;
+
+  const ctx = canvas.getContext("2d");
+  ctx.drawImage(img, 0, 0);
+  const dataURL = canvas.toDataURL("image/png");
+  return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+};
+
+const loadGalleryData = () => {
+  const storedData = localStorage.getItem('gallery_data');
+  if (storedData) {
+    galleryData.value = JSON.parse(storedData);
+  }
+};
+// @Lukas die Bilder solltest du dann noch mithilfe von img.src zurückbekommen und daraus kannst du deine Galerie basteln
+
+onMounted( () => {
+  window.addEventListener('saveImage', storeImage);
+  loadGalleryData(); // @Lukas du musst noch neu sortieren und die einzelnen posts anzeigen lassen
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('saveImage', storeImage);
+});
+
 </script>
 
 <style scoped>

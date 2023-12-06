@@ -5,16 +5,13 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 </script>
 
 <template>
-  <div class="black-background">
-    <h1 class="header-title">Meow Generator</h1>
-    <image-manipulation />
-    <image-uploader />
-  </div>
+<v-container fluid>
+  <h1 class="header-title">Meow Generator</h1>
+  <ImageManipulation />
+  <ImageUploader/>
+</v-container>
 </template>
 
 <style scoped>
-.black-background {
-  background-color: black;
-  color: white;
-}
+
 </style>

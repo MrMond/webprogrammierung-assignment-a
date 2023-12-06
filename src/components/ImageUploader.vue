@@ -47,14 +47,18 @@ export default {
 </script>
 
 <template>
-  <div
-      class="image-uploader"
+  <v-container
+      class="image-uploader" 
       @dragover.prevent
-      @drop="handleDrop"
-  >
-    <span v-if="!image">Drag and Drop Image here</span>
-    <span v-if="image">Drag and Drop another Image in order to replace the picture currently on display</span>
-  </div>
+      @drop="handleDrop">
+
+    <v-row v-if="!image">
+      <h4>Drag and Drop Image </h4>
+    </v-row>
+    <v-row v-if="image">
+      <h4>Drag and Drop another Image in order to replace the picture currently on display</h4>
+    </v-row>
+  </v-container>
 </template>
 
 <style scoped>

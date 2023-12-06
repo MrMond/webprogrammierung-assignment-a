@@ -6,9 +6,10 @@ export default {
     };
   },
   mounted() {
-    // Retrieve image from sessionStorage when the component is mounted
-    this.image = sessionStorage.getItem('uploadedImage');
+    // Lade das Bild aus dem Local Storage
+    this.image = localStorage.getItem('uploadedImage');
   },
+
   methods: {
     handleDrop(event) {
       event.preventDefault();

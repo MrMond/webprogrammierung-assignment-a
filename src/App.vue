@@ -16,7 +16,7 @@
         <VListItem prepend-icon="mdi-home" link to="/home" @click="handleNavigation">
           Home
         </VListItem>
-        <VListItem prepend-icon="mdi-image" link to="/Meowsterpeace Gallery" @click="handleNavigation">
+        <VListItem prepend-icon="mdi-image" link to="/MeowsterpeaceGallery" @click="handleNavigation">
           Meowsterpeace Gallery
         </VListItem>
         <VListItem prepend-icon="mdi-paw" link to="/CatMemeGenerator" @click="handleNavigation">

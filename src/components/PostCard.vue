@@ -1,3 +1,4 @@
+<!-- PostCard.vue -->
 <template>
   <VCard
       class="mx-auto"

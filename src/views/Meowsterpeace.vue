@@ -74,32 +74,38 @@ const closeModal = () => {
 };
 
 const updateLikes = (card, newLikes) => {
-  if (newLikes != null) {
-    card.likes = newLikes;
-    // Update the likes in galleryData
-    const index = galleryData.value.findIndex(item => item.title === card.title);
-    if (index !== -1) {
-      galleryData.value[index].likes = newLikes;
-      // Update local storage
-      localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
-    }
+  card.likes = newLikes;
+
+  // Update the likes in galleryData
+  const index = galleryData.value.findIndex(item => item.title === card.title);
+  if (index !== -1) {
+    galleryData.value[index].likes = newLikes;
+
+    // Update local storage
+    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
   }
 };
 
+
 const addNewPostcard = () => {
-  const { title, imgSrc } = newPostcard.value;
-  if (title && imgSrc) {
+  const { title } = newPostcard.value;
+
+  if (title) {
+    // Die imgSrc auf das zuletzt gespeicherte Bild setzen
+    const imgSrc = sessionStorage.getItem('uploadedImage') || "/default_image.jpg";
     const newPost = { title, imgSrc, likes: 0 };
+
     galleryData.value.push(newPost);
 
     // Update local storage
     localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
 
-    // Reset form and close dialog
+    // Reset form und schließe den Dialog
     newPostcard.value = { title: '', imgSrc: '' };
     showAddPostcardDialog.value = false;
   }
 };
+
 
 const cancelAddPostcard = () => {
   newPostcard.value = { title: '', imgSrc: '' };

@@ -11,7 +11,7 @@
       </v-col>
     </v-row>
 
-    <v-btn @click="showAddPostcardDialog = true">Neue Postcard hinzufügen</v-btn>
+    <v-btn @click="showAddPostcardDialog = true">Add new Postcard</v-btn>
 
     <!-- Modal for enlarged view -->
     <v-dialog v-model="showModalDialog" max-width="800">
@@ -29,24 +29,24 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="closeModal">Schließen</v-btn>
+          <v-btn @click="closeModal">Close</v-btn>
           <!-- Neuer Button zum Entfernen -->
-          <v-btn @click="removePostcard">Entfernen</v-btn>
+          <v-btn @click="removePostcard">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
     <v-dialog v-model="showAddPostcardDialog" max-width="400">
       <v-card>
-        <v-card-title>Neue Postcard hinzufügen</v-card-title>
+        <v-card-title>Add new Postcard</v-card-title>
         <v-card-text>
           <v-text-field v-model="newPostcard.title" label="Titel" />
           <v-text-field v-model="newPostcard.imgSrc" label="Bild-URL" />
           <v-text-field v-model="newPostcard.likes" label="Likes" />
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="addNewPostcard">Hinzufügen</v-btn>
-          <v-btn @click="cancelAddPostcard">Abbrechen</v-btn>
+          <v-btn @click="addNewPostcard">Add</v-btn>
+          <v-btn @click="cancelAddPostcard">Cancel</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

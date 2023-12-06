@@ -1,46 +1,45 @@
 <template>
-  <div class="faq-page">
-    <v-container>
-      <v-row>
-        <v-col cols="12">
-          <h2 class="faq-heading">Common Curiosities</h2>
-        </v-col>
-      </v-row>
+  <div class="faq-page container"> <!-- Änderung hier: füge die Klasse "container" hinzu -->
+    <v-row>
+      <v-col cols="12">
+        <h2 class="faq-heading">Common Curiosities</h2>
+      </v-col>
+    </v-row>
 
-      <v-expansion-panels>
-        <v-expansion-panel v-for="(faq, index) in faqs" :key="index" class="faq-panel" style="margin-bottom: 25px;">
-          <v-expansion-panel-header @click="togglePanel(index)" class="faq-question">
-            {{ faq.question }}
-            <v-icon v-if="openPanels.includes(index)">mdi-chevron-up</v-icon>
-            <v-icon v-else>mdi-chevron-down</v-icon>
-          </v-expansion-panel-header>
-          <v-expansion-panel-content v-show="openPanels.includes(index)">
-            <div class="faq-answer">{{ faq.answer }}</div>
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
+    <v-expansion-panels>
+      <v-expansion-panel v-for="(faq, index) in faqs" :key="index" class="faq-panel" style="margin-bottom: 25px;">
+        <v-expansion-panel-header @click="togglePanel(index)" class="faq-question">
+          {{ faq.question }}
+          <v-icon v-if="openPanels.includes(index)">mdi-chevron-up</v-icon>
+          <v-icon v-else>mdi-chevron-down</v-icon>
+        </v-expansion-panel-header>
+        <v-expansion-panel-content v-show="openPanels.includes(index)">
+          <div class="faq-answer">{{ faq.answer }}</div>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </v-expansion-panels>
 
-      <v-row>
-        <v-col cols="12" class="text-center">
-          <v-btn @click="openNewQuestionDialog" color="#63775B" dark>Still curios?</v-btn>
-        </v-col>
-      </v-row>
+    <v-row>
+      <v-col cols="12" class="text-center">
+        <v-btn @click="openNewQuestionDialog" color="#63775B" dark>Still curios?</v-btn>
+      </v-col>
+    </v-row>
 
-      <v-dialog v-model="dialog" max-width="400">
-        <v-card>
-          <v-card-title class="text-h5">Ask us</v-card-title>
-          <v-card-text>
-            <p>If you have a question that has not yet been answered here, please contact us at:</p>
-            <p><strong>{{ email }}</strong></p>
-          </v-card-text>
-          <v-card-actions>
-            <v-btn @click="closeNewQuestionDialog" color="primary">Close</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-container>
+    <v-dialog v-model="dialog" max-width="400">
+      <v-card>
+        <v-card-title class="text-h5">Ask us</v-card-title>
+        <v-card-text>
+          <p>If you have a question that has not yet been answered here, please contact us at:</p>
+          <p><strong>{{ email }}</strong></p>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeNewQuestionDialog" color="primary">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
+
 
 
 
@@ -79,19 +78,22 @@ const closeNewQuestionDialog = () => {
 <style scoped>
 .faq-page {
   background-color: #f0f0f0;
-  padding: 40px 0;
+  padding-bottom: 250px;
+  padding-top: 250px;
+  padding-right: 200px;
+  padding-left: 200px;
 }
 
 .faq-heading {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 35px;
   font-family: Lobster;
   font-size: xx-large;
   color: #333;
 }
 
 .faq-panel {
-  margin-bottom: 10px; /* Ändere dies nach Bedarf */
+  margin-bottom: 10px;
 }
 
 .faq-question {

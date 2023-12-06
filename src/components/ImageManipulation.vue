@@ -315,7 +315,7 @@ const createTextElement = () => {
 <style scoped>
 .image-manipulation canvas {
   max-width: 95vw;
-  /*max-height: 800px;*/
+  max-height: 65vh;
   background-color: rgba(255, 255, 255, 0.25);
 }
 

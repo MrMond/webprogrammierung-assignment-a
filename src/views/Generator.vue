@@ -5,11 +5,11 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 </script>
 
 <template>
-<v-container fluid>
+<v-col>
   <h1 class="header-title">Meow Generator</h1>
   <ImageManipulation />
   <ImageUploader/>
-</v-container>
+</v-col>
 </template>
 
 <style scoped>

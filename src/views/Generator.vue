@@ -13,7 +13,7 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 
 <style scoped>
 .generator {
-  max-width: 90vw;
+
   background-color: #f0f0f0;
   padding-bottom: 250px;
   padding-top: 250px;

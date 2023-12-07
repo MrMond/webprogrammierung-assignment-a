@@ -5,7 +5,7 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 </script>
 
 <template>
-<v-col>
+<v-col class="generator">
   <h1 class="header-title">Meow Generator</h1>
   <ImageManipulation />
   <ImageUploader/>
@@ -13,5 +13,7 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 </template>
 
 <style scoped>
-
+.generator {
+  max-width: 90vw;
+}
 </style>

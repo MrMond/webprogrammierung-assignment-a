@@ -5,7 +5,7 @@ export default {
     //sticker selection
     const stickerDialog = ref(false);
     const stickers = ref(['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R'])
-    const selectedSticker = ref(null)
+    const selectedSticker = ref({sticker:"public/user1-128x128.jpg",scale:1})
     //setup of image
     const image = ref(sessionStorage.getItem('uploadedImage'));
     const imageAvailable = ref(!!image.value);
@@ -23,6 +23,8 @@ export default {
 
     const updateDisplayEventListener = () => {
       console.log("received picture");
+      selectedElement.value = null;
+      allElements.value = [];
       updateImage();
     };
 
@@ -75,10 +77,31 @@ export default {
     };
 
     const selectSticker = (selection) =>  {
-      if(!!image.value) {
+      if(!!image.value) { //['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R']
         switch (selection) {
+          case "Angry":
+            selectedSticker.value = {sticker:"public/angry.png",scale:0.1};
+            break;
+          case "Big Angry":
+            selectedSticker.value = {sticker:"public/angry.png",scale:0.15};
+            break;
+          case "Circle S":
+            selectedSticker.value = {sticker:"public/circle.png",scale:0.05};
+            break;
+          case "Circle M":
+            selectedSticker.value = {sticker:"public/circle.png",scale:0.1};
+            break;
+          case "Circle L":
+            selectedSticker.value = {sticker:"public/circle.png",scale:0.15};
+            break;
+          case "Speed L":
+            selectedSticker.value = {sticker:"public/speed_left.png",scale:0.2};
+            break;
+          case "Speed R":
+            selectedSticker.value = {sticker:"public/speed_right.png",scale:0.2};
+            break;
           default:
-            selectedSticker.value = "public/user1-128x128.jpg"
+            selectedSticker.value = {sticker:"public/user1-128x128.jpg",scale:1};
             break;
         }
         closeDialog();
@@ -101,9 +124,9 @@ export default {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       const img = new Image();
-      img.src = selectedSticker.value;
+      img.src = selectedSticker.value.sticker;
       img.onload = () => {
-        const sticker = {type:"sticker",image:img,x:10,y:10};
+        const sticker = {type:"sticker",image:img,x:10,y:10,scale:selectedSticker.value.scale};
         allElements.value.push(sticker);
         drawSticker(ctx, sticker);
         makeMovable(canvas);
@@ -111,7 +134,9 @@ export default {
     }
 
     const drawSticker = (context, sticker) => {
-      context.drawImage(sticker.image, sticker.x, sticker.y);
+      const width = sticker.image.width * sticker.scale;
+      const height = sticker.image.height * sticker.scale;
+      context.drawImage(sticker.image, sticker.x, sticker.y, width, height);
       console.log("Sticker draw call");
     };
 
@@ -181,8 +206,8 @@ export default {
         if (isDraggable) {
           switch (selectedElement.value.type){
             case "sticker":
-              selectedElement.value.x = cursorX.value - selectedElement.value.image.width/2;
-              selectedElement.value.y = cursorY.value - selectedElement.value.image.height/2;
+              selectedElement.value.x = cursorX.value - selectedElement.value.scale * selectedElement.value.image.width/2;
+              selectedElement.value.y = cursorY.value - selectedElement.value.scale * selectedElement.value.image.height/2;
               break;
             case "text":
               selectedElement.value.x = cursorX.value - selectedElement.value.width/2;
@@ -208,9 +233,9 @@ export default {
         case "sticker":
           return (
               pointX >= element.x &&
-              pointX <= element.x + element.image.width &&
+              pointX <= element.x + element.scale * element.image.width &&
               pointY >= element.y &&
-              pointY <= element.y + element.image.height
+              pointY <= element.y + element.scale * element.image.height
           );
         case "text":
           return (

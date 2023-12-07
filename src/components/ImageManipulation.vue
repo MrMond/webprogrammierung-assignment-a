@@ -343,7 +343,7 @@ export default {
       </v-card>
     </v-dialog>
 
-    <v-btn @click="buttonSave"> Save </v-btn>
+    <v-btn @click="buttonSave" style="background-color: #63775B; color: white"> Save </v-btn>
   </v-container>
   <v-container class = "image-manipulation">
     <canvas id="canvas" width="0" height="0"></canvas>

@@ -1,5 +1,5 @@
 <template>
-  <div class="faq-page container"> <!-- Änderung hier: füge die Klasse "container" hinzu -->
+  <div class="faq-page container">
     <v-row>
       <v-col cols="12">
         <h2 class="faq-heading">Common Curiosities</h2>
@@ -48,9 +48,12 @@ import { ref } from 'vue';
 
 const faqs = ref([
   { question: 'What type of cats can I upload?', answer: 'You can upload any feline. All cats are welcome in our memefactory!' },
+  { question: 'Which data types can I upload?', answer: 'Your Meowsterpeace starts with a jpg, png or aviv file.' },
   { question: 'Any size limit for uploading images?', answer: 'No size limit per se, but remember, the bigger the file, the longer the loading time. We suggest keeping it under 5MB.' },
-  { question: 'How to create the purrfect meme?', answer: 'Simply add your wittiest caption to the picture and voilà! You‘ve created your personal cat meme' },
+  { question: 'How to create the purrfect meme?', answer: 'Simply add your wittiest caption to the picture and voilà! You‘ve created your personal cat meme.' },
+  { question: 'How do I change the font size of the text?', answer: 'You can change the size of the text with the page up and page down buttons on your keyboard.' },
   { question: 'What if I don’t have a cat photo?', answer: 'Worry not! We provide a variety of default images for you to choose from.' },
+
 ]);
 
 const openPanels = ref([]);
@@ -87,7 +90,7 @@ const closeNewQuestionDialog = () => {
 .faq-heading {
   text-align: center;
   margin-bottom: 35px;
-  font-family: Lobster;
+  font-family: Times New Roman;
   font-size: xx-large;
   color: #333;
 }

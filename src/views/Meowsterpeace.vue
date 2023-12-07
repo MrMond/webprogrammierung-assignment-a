@@ -168,6 +168,13 @@ window.addEventListener('openPostcardDetails', openPostcardDetails);
 
 
 <style scoped>
+
+
+h1 {
+  font-family: 'Times New Roman', Times, serif;
+  color: white;
+}
+
 .gallery-card-container {
   cursor: pointer;
   width: 250px;

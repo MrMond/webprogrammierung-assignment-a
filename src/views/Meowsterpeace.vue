@@ -11,8 +11,6 @@
       </v-col>
     </v-row>
 
-    <v-btn @click="showAddPostcardDialog = true">Add new Postcard</v-btn>
-
     <!-- Modal for enlarged view -->
     <v-dialog v-model="showModalDialog" max-width="800">
       <template v-slot:activator="{ on, attrs }">

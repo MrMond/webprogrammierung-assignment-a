@@ -20,7 +20,9 @@
     <v-row v-if="largeView">
       <v-col>
         <span>{{ likes }} Likes</span>
-        <v-btn @click="changeLikesDialog">Ändern</v-btn>
+        <v-btn @click="incrementLikes" icon>
+          <v-icon>{{ liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -47,6 +49,7 @@ export default {
     return {
       changeLikesDialogVisible: false,
       newLikes: this.likes,
+      liked: false,
     };
   },
   methods: {
@@ -63,8 +66,17 @@ export default {
     cancelLikesChange() {
       this.changeLikesDialogVisible = false;
     },
+
+    incrementLikes() {
+      // Erhöhe die Likes um 1
+      this.$emit('update-likes', this.likes + 1);
+
+      // Setze den Zustand des Herz-Buttons
+      this.liked = true;
+    },
   },
 };
+
 </script>
 
 <style scoped>

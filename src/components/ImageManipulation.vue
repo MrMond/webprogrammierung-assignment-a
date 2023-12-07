@@ -5,7 +5,7 @@ export default {
     //sticker selection
     const stickerDialog = ref(false);
     const stickers = ref(['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R'])
-    const selectedSticker = ref({sticker:"public/user1-128x128.jpg",scale:1})
+    const selectedSticker = ref({sticker:"public/user1-128x128.jpg",scale:0})
     //setup of image
     const image = ref(sessionStorage.getItem('uploadedImage'));
     const imageAvailable = ref(!!image.value);
@@ -14,10 +14,12 @@ export default {
     const cursorY = ref(0);
     const selectedElement = ref(null);
     const allElements = ref([]);
+    const scaleFactorX = ref(1);
+    const scaleFactorY = ref(1);
     const updateImage = () => {
       image.value = sessionStorage.getItem('uploadedImage');
       imageAvailable.value = !!image.value;
-      redrawCanvas()
+      redrawCanvas();
       console.log("updated image");
     };
 
@@ -31,7 +33,7 @@ export default {
     //button listeners
     const buttonText = () => {
       if(!!image.value) {
-        createTextElement();
+        createTextElement("click to edit");
       }
     };
 
@@ -77,44 +79,51 @@ export default {
     };
 
     const selectSticker = (selection) =>  {
-      if(!!image.value) { //['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R']
+      if(!!image.value) {
+        let img_scale;
+        const canvas = document.getElementById("canvas");
+        if (canvas.width < canvas.height) {
+          img_scale = scaleFactorY.value;
+        } else {
+          img_scale = scaleFactorX.value;
+        }
         switch (selection) {
           case "Angry":
-            selectedSticker.value = {sticker:"public/angry.png",scale:0.1};
+            selectedSticker.value = {sticker:"public/angry.png",scale:0.1*img_scale};
             break;
           case "Big Angry":
-            selectedSticker.value = {sticker:"public/angry.png",scale:0.15};
+            selectedSticker.value = {sticker:"public/angry.png",scale:0.15*img_scale};
             break;
           case "Circle S":
-            selectedSticker.value = {sticker:"public/circle.png",scale:0.05};
+            selectedSticker.value = {sticker:"public/circle.png",scale:0.05*img_scale};
             break;
           case "Circle M":
-            selectedSticker.value = {sticker:"public/circle.png",scale:0.1};
+            selectedSticker.value = {sticker:"public/circle.png",scale:0.1*img_scale};
             break;
           case "Circle L":
-            selectedSticker.value = {sticker:"public/circle.png",scale:0.15};
+            selectedSticker.value = {sticker:"public/circle.png",scale:0.15*img_scale};
             break;
           case "Speed L":
-            selectedSticker.value = {sticker:"public/speed_left.png",scale:0.2};
+            selectedSticker.value = {sticker:"public/speed_left.png",scale:0.2*img_scale};
             break;
           case "Speed R":
-            selectedSticker.value = {sticker:"public/speed_right.png",scale:0.2};
+            selectedSticker.value = {sticker:"public/speed_right.png",scale:0.2*img_scale};
             break;
           default:
-            selectedSticker.value = {sticker:"public/user1-128x128.jpg",scale:1};
+            selectedSticker.value = {sticker:"public/user1-128x128.jpg",scale:0.99*img_scale};
             break;
         }
         closeDialog();
-        createStickerElement()
+        createStickerElement();
       }
     }
 
     //button functionality
-    const createTextElement = () => {
+    const createTextElement = (text) => {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
-      const text = "click to edit";
-      const textarea = {type:"text",text:text,x:10,y:10,width:0,height:0};
+      //const text = "click to edit";
+      const textarea = {type:"text",text:text,size:50,x:10,y:10,width:0,height:0};
       allElements.value.push(textarea);
       drawTextarea(ctx, textarea);
       makeMovable(canvas);
@@ -141,7 +150,8 @@ export default {
     };
 
     const drawTextarea = (context, textarea) => {
-      const textSize = 50;
+      const textSize = textarea.size;
+      console.log(textSize);
       context.font = `${textSize}px Lobster`;
       context.fillText(textarea.text,textarea.x,textarea.y+textSize);
       const textMetrics = context.measureText(textarea.text);
@@ -175,13 +185,15 @@ export default {
 
     const makeMovable = (canvas) => {
       const rect = canvas.getBoundingClientRect();
-      const scaleFactorX = canvas.width / rect.width;
-      const scaleFactorY = canvas.height / rect.height;
+      scaleFactorX.value = canvas.width / rect.width;
+      scaleFactorY.value = canvas.height / rect.height;
+      console.log(scaleFactorY.value)
+      console.log(scaleFactorX.value)
       var isDraggable = false;
 
       canvas.onmousedown = function(event) {
-        cursorX.value = (event.clientX - rect.left) * scaleFactorX;
-        cursorY.value = (event.clientY - rect.top) * scaleFactorY;
+        cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
+        cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
         allElements.value.forEach(element => {
           if (isPointInsideElement(cursorX.value, cursorY.value, element)) {
             selectedElement.value = element;
@@ -193,16 +205,16 @@ export default {
 
       canvas.onmousemove = function(event) {
         if (isDraggable) {
-          cursorX.value = (event.clientX - rect.left) * scaleFactorX;
-          cursorY.value = (event.clientY - rect.top) * scaleFactorY;
+          cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
+          cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
           selectedElement.value.x = cursorX.value
           selectedElement.value.y = cursorY.value
         }
       };
 
       canvas.onmouseup = function(event) {
-        cursorX.value = (event.clientX - rect.left) * scaleFactorX;
-        cursorY.value = (event.clientY - rect.top) * scaleFactorY;
+        cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
+        cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
         if (isDraggable) {
           switch (selectedElement.value.type){
             case "sticker":
@@ -261,11 +273,20 @@ export default {
               selectedElement.value.text += "   ";
               redrawCanvas();
               break;
+            case "PageUp":
+              selectedElement.value.size += 5;
+              redrawCanvas();
+              break;
+            case "PageDown":
+              selectedElement.value.size = Math.max(5, selectedElement.value.size-5);
+
+              redrawCanvas();
+              break;
             default:
               if (keyPressed.length == 1) {
                 selectedElement.value.text += keyPressed;
                 redrawCanvas();
-              }
+              } else {console.log(keyPressed)}
               break;
           }
         }
@@ -277,7 +298,7 @@ export default {
       window.addEventListener('updateDisplay', updateDisplayEventListener);
       window.addEventListener('keydown', readKeyboardInput);
       if (imageAvailable.value) {
-        redrawCanvas();
+        updateImage();
       }
     });
 

@@ -39,6 +39,7 @@ export default {
 
     const buttonSave = () => {
       if (!!image.value) {
+        //redrawCanvas();
         try {
           console.log(`Number of saved Elements: ${allElements.value.length}`);
           const canvas = document.getElementById("canvas");
@@ -104,10 +105,10 @@ export default {
             selectedSticker.value = {sticker:"public/circle.png",scale:0.15*img_scale};
             break;
           case "Speed L":
-            selectedSticker.value = {sticker:"public/speed_left.png",scale:0.2*img_scale};
+            selectedSticker.value = {sticker:"public/speed_left.png",scale:0.15*img_scale};
             break;
           case "Speed R":
-            selectedSticker.value = {sticker:"public/speed_right.png",scale:0.2*img_scale};
+            selectedSticker.value = {sticker:"public/speed_right.png",scale:0.15*img_scale};
             break;
           default:
             selectedSticker.value = {sticker:"public/user1-128x128.jpg",scale:0.99*img_scale};
@@ -151,7 +152,6 @@ export default {
 
     const drawTextarea = (context, textarea) => {
       const textSize = textarea.size;
-      console.log(textSize);
       context.font = `${textSize}px Lobster`;
       context.fillText(textarea.text,textarea.x,textarea.y+textSize);
       const textMetrics = context.measureText(textarea.text);
@@ -187,13 +187,14 @@ export default {
       const rect = canvas.getBoundingClientRect();
       scaleFactorX.value = canvas.width / rect.width;
       scaleFactorY.value = canvas.height / rect.height;
-      console.log(scaleFactorY.value)
-      console.log(scaleFactorX.value)
       var isDraggable = false;
 
       canvas.onmousedown = function(event) {
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
+        try {
+          console.log(`click (${cursorX.value}/${cursorY.value}) text (${selectedElement.value.x}/${selectedElement.value.y}/w:${selectedElement.value.width}/h:${selectedElement.value.height})`);
+        } catch {}
         allElements.value.forEach(element => {
           if (isPointInsideElement(cursorX.value, cursorY.value, element)) {
             selectedElement.value = element;
@@ -215,6 +216,7 @@ export default {
       canvas.onmouseup = function(event) {
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
+        console.log(`mouseup @ (${cursorX.value}/${cursorY.value})`)
         if (isDraggable) {
           switch (selectedElement.value.type){
             case "sticker":
@@ -241,8 +243,14 @@ export default {
     }
 
     const isPointInsideElement = (pointX, pointY, element) => {
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
       switch (element.type) {
         case "sticker":
+          ctx.fillRect(element.x,element.y,10,10);
+          ctx.fillRect(element.x,element.y + element.scale * element.image.height,10,10);
+          ctx.fillRect(element.x + element.scale * element.image.width,element.y,10,10);
+          ctx.fillRect(element.x + element.scale * element.image.width,element.y + element.scale * element.image.height,10,10);
           return (
               pointX >= element.x &&
               pointX <= element.x + element.scale * element.image.width &&
@@ -250,6 +258,10 @@ export default {
               pointY <= element.y + element.scale * element.image.height
           );
         case "text":
+          ctx.fillRect(element.x,element.y,10,10);
+          ctx.fillRect(element.x,element.y + element.height,10,10);
+          ctx.fillRect(element.x + element.width,element.y,10,10);
+          ctx.fillRect(element.x + element.width,element.y + element.height,10,10);
           return (
               pointX >= element.x &&
               pointX <= element.x + element.width &&
@@ -279,7 +291,6 @@ export default {
               break;
             case "PageDown":
               selectedElement.value.size = Math.max(5, selectedElement.value.size-5);
-
               redrawCanvas();
               break;
             default:
@@ -352,7 +363,7 @@ export default {
 
 <style scoped>
 .image-manipulation canvas {
-  max-width: 80vw;
+  max-width: 45vw;
   max-height: 65vh;
   background-color: rgba(255, 255, 255, 0.25);
 }

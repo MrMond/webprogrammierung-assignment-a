@@ -57,11 +57,11 @@ export default {
               if (title) {
                 window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } }));
               }
+              alert("Saved your changes. The image is now available in the gallery.");
             } catch (e) {
               console.log("Saving failed, cache full");
               alert("Your browser's cache overflowed. Try again with a smaller image.");
             }
-            alert("Saved your changes. The image is now available in the gallery.");
           };
         } catch (e) {
           console.log("Saving failed, cache full");

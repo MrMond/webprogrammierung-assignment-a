@@ -22,6 +22,9 @@
         <VListItem prepend-icon="mdi-paw" link to="/CatMemeGenerator" @click="handleNavigation">
           CatMemeGenerator
         </VListItem>
+        <VListItem prepend-icon="mdi-help-circle" link to="/CommonCuriosities" @click="handleNavigation">
+          Common Curiosities
+        </VListItem>
       </VList>
 
       <!-- Logo am unteren Ende -->
@@ -71,10 +74,10 @@ const handleNavigation = () => {
 }
 
 .logo-container {
-  padding: 16px; /* Anpassen Sie den Abstand nach Bedarf */
+  padding: 16px;
 }
 
 .logo {
-  width: 175px; /* Anpassen Sie die Breite des Logos nach Bedarf */
+  width: 175px;
 }
 </style>

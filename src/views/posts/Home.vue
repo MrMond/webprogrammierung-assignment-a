@@ -1,20 +1,20 @@
-<script setup>
-import { ref } from 'vue';
-</script>
-
+<!-- Home.vue -->
 <template>
   <div>
     <h1 class="catchphrase">Let`s get those Cats <br> memed up!</h1>
 
-
     <router-link to="/CatMemeGenerator">
       <button class="styled-button">Start generating</button>
     </router-link>
+
   </div>
 </template>
 
+<script setup>
+</script>
+
 <style scoped>
-/* Style des Button */
+/* Stil des Button */
 .styled-button {
   background-color: #63775B;
   color: #fff;
@@ -24,9 +24,8 @@ import { ref } from 'vue';
   cursor: pointer;
   font-size: 16px;
 }
-</style>
 
-<style scoped>
+/* Stil der Catchphrase */
 .catchphrase {
   color: white;
   font-family: 'DialogInput';
@@ -34,8 +33,3 @@ import { ref } from 'vue';
   margin-bottom: 20px;
 }
 </style>
-
-
-
-
-

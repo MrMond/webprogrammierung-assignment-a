@@ -34,7 +34,7 @@ export default {
       const reader = new FileReader();
       reader.onload = () => {
         this.image = reader.result;
-        sessionStorage.setItem('uploadedImage', this.image);
+        localStorage.setItem('uploadedImage', this.image);
         window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
       };
       reader.readAsDataURL(image);
@@ -56,7 +56,7 @@ export default {
 
     selectOption(selection) {
       this.image = selection
-      sessionStorage.setItem('uploadedImage', this.image);
+      localStorage.setItem('uploadedImage', this.image);
       window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
       this.closeDialog();
     },

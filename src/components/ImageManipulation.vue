@@ -7,7 +7,7 @@ export default {
     const stickers = ref(['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R'])
     const selectedSticker = ref({sticker:"public/user1-128x128.jpg",scale:0})
     //setup of image
-    const image = ref(sessionStorage.getItem('uploadedImage'));
+    const image = ref(localStorage.getItem('uploadedImage'));
     const imageAvailable = ref(!!image.value);
     // drawing variables
     const cursorX = ref(0);
@@ -17,7 +17,7 @@ export default {
     const scaleFactorX = ref(1);
     const scaleFactorY = ref(1);
     const updateImage = () => {
-      image.value = sessionStorage.getItem('uploadedImage');
+      image.value = localStorage.getItem('uploadedImage');
       imageAvailable.value = !!image.value;
       redrawCanvas();
       console.log("updated image");
@@ -46,8 +46,8 @@ export default {
           combinedImage.src = canvas.toDataURL();
           combinedImage.onload = () => {
             try {
-              sessionStorage.setItem('uploadedImage', null);
-              sessionStorage.setItem('uploadedImage', combinedImage.src);
+              localStorage.setItem('uploadedImage', null);
+              localStorage.setItem('uploadedImage', combinedImage.src);
               allElements.value = [];
               selectedElement.value = null;
             } catch (e) {

@@ -28,8 +28,8 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="closeModal">Close</v-btn>
-          <v-btn @click="removePostcard">Delete</v-btn>
+          <v-btn class="cardInteractable" @click="closeModal">Close</v-btn>
+          <v-btn class="cardInteractable" @click="removePostcard">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -146,4 +146,7 @@ h1 {
   margin: 8px;
 }
 
+.cardInteractable {
+  font-family: 'Arial', 'serif';
+}
 </style>

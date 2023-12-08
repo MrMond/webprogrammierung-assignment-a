@@ -10,7 +10,7 @@
   >
 
     <!--Darstellung des Titels, einer Trennlinie und des Memebildes-->
-    <VCardTitle>{{ title }}</VCardTitle>
+    <VCardTitle class="title">{{ title }}</VCardTitle>
     <VDivider />
     <VImg
         v-if="imgSrc"
@@ -23,7 +23,7 @@
     <!--wenn largeView wahr ist, wird hier der LikeButton dargestellt -->
     <v-row v-if="largeView">
       <v-col>
-        <span>{{ likes }} Likes</span>
+        <span class="cardInteractable">{{ likes }} Likes</span>
         <v-btn @click="incrementLikes" icon>
           <v-icon>{{ liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
         </v-btn>
@@ -56,3 +56,13 @@ export default {
 };
 
 </script>
+
+<style scoped>
+.title {
+  font-family: 'Arial', 'serif';
+}
+
+.cardInteractable {
+  font-family: 'Arial', 'serif';
+}
+</style>

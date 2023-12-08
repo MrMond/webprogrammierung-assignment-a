@@ -128,5 +128,6 @@ export default {
   border: none;
   background: none;
   box-shadow: none;
+  font-family: 'Arial', 'serif';
 }
 </style>

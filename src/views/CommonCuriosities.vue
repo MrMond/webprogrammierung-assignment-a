@@ -21,7 +21,7 @@
 
     <v-row>
       <v-col cols="12" class="text-center">
-        <v-btn @click="openNewQuestionDialog" color="#63775B" dark>Still curios?</v-btn>
+        <v-btn class="button" @click="openNewQuestionDialog" color="#63775B" dark>Still curios?</v-btn>
       </v-col>
     </v-row>
 
@@ -106,11 +106,17 @@ const closeNewQuestionDialog = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-family: 'Arial', 'serif';
 }
 
 .faq-answer {
   font-size: 16px;
   margin-top: 10px;
   white-space: pre-line;
+  font-family: 'Arial', 'serif';
+}
+
+.button {
+  font-family: 'Arial', 'serif';
 }
 </style>

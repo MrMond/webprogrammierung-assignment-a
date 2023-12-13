@@ -46,22 +46,22 @@ export default {
           combinedImage.src = canvas.toDataURL();
           combinedImage.onload = () => {
             try {
-              sessionStorage.setItem('uploadedImage', null);
+              sessionStorage.clear();
               sessionStorage.setItem('uploadedImage', combinedImage.src);
               allElements.value = [];
               selectedElement.value = null;
+              window.dispatchEvent(new Event('updateDisplay'));
+              window.dispatchEvent(new Event('saveImage'));
+              const title = prompt("Enter the title for the new postcard:");
+              if (title) {
+                window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } }));
+              }
+              alert("Saved your changes. The image is now available in the gallery.");
             } catch (e) {
-              console.log("Saving failed, cache full");
+              console.log("Saving failed, cache full; error:");
+              console.log(e)
               alert("Your browser's cache overflowed. Try again with a smaller image.");
             }
-            window.dispatchEvent(new Event('updateDisplay'));
-            window.dispatchEvent(new Event('saveImage'));
-            const title = prompt("Enter the title for the new postcard:");
-            if (title) {
-              window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } }));
-            }
-
-            alert("Saved your changes. The image is now available in the gallery.");
           };
         } catch (e) {
           console.log("Saving failed, cache full");

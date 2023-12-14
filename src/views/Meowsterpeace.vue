@@ -39,7 +39,7 @@
       <v-card>
         <v-card-title class="headline">Confirm Delete</v-card-title>
         <v-card-text>
-          Are you sure you want to delete this postcard?
+          Are you sure you want to delete your meowsterpeace?
         </v-card-text>
         <v-card-actions>
           <v-btn @click="cancelDelete">Cancel</v-btn>

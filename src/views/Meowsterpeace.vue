@@ -29,7 +29,21 @@
         </v-card-text>
         <v-card-actions>
           <v-btn class="cardInteractable" @click="closeModal">Close</v-btn>
-          <v-btn class="cardInteractable" @click="removePostcard">Delete</v-btn>
+          <v-btn class="cardInteractable" @click="confirmDelete">Delete</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Bestätigungsdialog für das Löschen -->
+    <v-dialog v-model="showDeleteDialog" max-width="400">
+      <v-card>
+        <v-card-title class="headline">Confirm Delete</v-card-title>
+        <v-card-text>
+          Are you sure you want to delete this postcard?
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="cancelDelete">Cancel</v-btn>
+          <v-btn @click="removePostcard" color="red">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -76,19 +90,7 @@ const updateLikes = (card, newLikes) => {
 };
 
 
-/*Methode zum entfernen eines Memes lokas und im localstorage*/
-const removePostcard = () => {
-  if (selectedPostCard.value) {
-    const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
-    if (index !== -1) {
-      // Entfernen aus galleryData
-      galleryData.value.splice(index, 1);
-      // Update local storage
-      localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
-      showModalDialog.value = false;
-    }
-  }
-};
+
 
 
 
@@ -127,7 +129,33 @@ const openPostcardDetails = (event) => {
 
 /* Eventlistener zum Auslösen der openpostcarddetails methode*/
 window.addEventListener('openPostcardDetails', openPostcardDetails);
+
+
+const showDeleteDialog = ref(false);
+
+const confirmDelete = () => {
+  showDeleteDialog.value = true;
+};
+
+const cancelDelete = () => {
+  showDeleteDialog.value = false;
+};
+
+const removePostcard = () => {
+  showDeleteDialog.value = false;
+  if (selectedPostCard.value) {
+    const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
+    if (index !== -1) {
+      // Entfernen aus galleryData
+      galleryData.value.splice(index, 1);
+      // Update local storage
+      localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+      showModalDialog.value = false;
+    }
+  }
+};
 </script>
+
 
 
 

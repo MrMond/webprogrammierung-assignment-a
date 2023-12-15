@@ -28,7 +28,7 @@
           CatMemeGenerator
         </VListItem>
         <VListItem prepend-icon="mdi-help-circle" link to="/CommonCuriosities" @click="handleNavigation">
-          Common Curiosities
+          FAQ
         </VListItem>
         </v-list>
       </v-navigation-drawer>
@@ -46,7 +46,7 @@
           CatMemeGenerator
         </VListItem>
         <VListItem prepend-icon="mdi-help-circle" link to="/CommonCuriosities" @click="handleNavigation">
-          Common Curiosities
+          FAQ
         </VListItem>
       </VList>
 

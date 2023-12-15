@@ -68,6 +68,37 @@ import BlogIcon from "@/components/icons/IconBlog.vue";
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import { computed } from 'vue'
+import { useDisplay } from 'vuetify'
+
+const { name } = useDisplay()
+
+const isMini = computed(() => {
+  switch (name.value) {
+    case 'xs': return true
+    case 'sm': return false
+    case 'md': return false
+    case 'lg': return false
+    case 'xl': return false
+    case 'xxl': return false
+  }
+})
+
+const height = computed(() => {
+  // name is reactive and
+  // must use .value
+  switch (name.value) {
+    case 'xs': return 220
+    case 'sm': return 400
+    case 'md': return 500
+    case 'lg': return 600
+    case 'xl': return 800
+    case 'xxl': return 1200
+  }
+
+  return undefined
+})
+
 const drawer = ref(false)
 const route = useRoute()
 const router = useRouter()
@@ -76,7 +107,7 @@ const handleNavigation = () => {
   drawer.value = false
 }
 
-const isMini = ref(true)
+
 
 </script>
 

@@ -5,7 +5,7 @@
       <VAppBarNavIcon variant="text" @click.stop="drawer = !drawer"/>
 
       <!-- Toolbar Titel -->
-      <v-toolbar class="white-background">
+      <v-toolbar class="titel-container"> 
         <v-toolbar-title class="titel-schriftzug">CatMemeGenerator</v-toolbar-title>
       </v-toolbar>
     </VAppBar>
@@ -130,6 +130,11 @@ const handleNavigation = () => {
   font-size: x-large;
 }
 
+.titel-container {
+  width:100%;
+  background-color: rgb(255, 255, 255);
+  
+}
 .logo-container {
   padding: 16px;
 }

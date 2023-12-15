@@ -10,7 +10,30 @@
       </v-toolbar>
     </VAppBar>
 
-    <VNavigationDrawer mobile-breakpoint="sm" v-model="drawer" class="white-background">
+    <v-navigation-drawer
+        v-if="isMini"
+        v-model="drawer"
+        location="top"
+        temporary
+        class="white-background"
+      >
+      <v-list>
+        <VListItem prepend-icon="mdi-home" link to="/home" @click="handleNavigation">
+          Home
+        </VListItem>
+        <VListItem prepend-icon="mdi-image" link to="/MeowsterpeaceGallery" @click="handleNavigation">
+          Meowsterpeace Gallery
+        </VListItem>
+        <VListItem prepend-icon="mdi-paw" link to="/CatMemeGenerator" @click="handleNavigation">
+          CatMemeGenerator
+        </VListItem>
+        <VListItem prepend-icon="mdi-help-circle" link to="/CommonCuriosities" @click="handleNavigation">
+          Common Curiosities
+        </VListItem>
+        </v-list>
+      </v-navigation-drawer>
+
+    <VNavigationDrawer v-else v-model="drawer" class="white-background">
       <VList>
         <!-- Navigationspunkte -->
         <VListItem prepend-icon="mdi-home" link to="/home" @click="handleNavigation">
@@ -52,6 +75,9 @@ const router = useRouter()
 const handleNavigation = () => {
   drawer.value = false
 }
+
+const isMini = ref(true)
+
 </script>
 
 <style scoped>

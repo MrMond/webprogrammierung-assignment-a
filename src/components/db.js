@@ -1,7 +1,8 @@
 //https://console.firebase.google.com/u/0/project/webprogrammierung-asignment-a/
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { getStorage } from "firebase/storage";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
 
 const firebaseConfig = {
     apiKey: "AIzaSyCnP15zDG62yvDrxZaqjG5nQ2YRD3zNfrY",
@@ -15,20 +16,37 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app); // evtl noch bucket mitgeben? https://firebase.google.com/docs/storage/web/start?hl=de
+const storage = getStorage(app);
 
 //crud functions
 
-
 // C
-export async function uploadPostCard(title_str,image_src,like_cnt){ 
+export async function uploadPostCard(title_str,imageStr,like_cnt){ 
+  //upload image to seperate storage
+  const primaryKey = uuidv4();
+  const storageRef = ref(storage, 'images/' + primaryKey);
+
+  try {
+    const snapshot = await uploadString(storageRef, imageStr);
+    console.log('File uploaded successfully:', snapshot);
+
+    // Get the download URL for the uploaded file
+    const downloadURL = await getDownloadURL(storageRef); //get it via key?
+    console.log('Download URL:', downloadURL);
+
+  } catch (error) {
+    console.error('Error uploading file:', error);
+    throw error;
+  }
+
+  //upload post card to firebase
   const docRef = await addDoc(collection(db, "Gallery"), {
-    imgSrc: image_src,
+    imgSrc: primaryKey,
     likes: like_cnt,
     title: title_str
     });
     console.log("Document written with ID: ", docRef.id);
-    return docRef.id; //mitspeichern!!
+    return docRef.id; //save this in the postcard for downloading it later!!
 }
 
 // R

@@ -25,15 +25,14 @@ export async function uploadPostCard(title_str,imageStr,like_cnt){
   //upload image to seperate storage
   const primaryKey = uuidv4();
   const storageRef = ref(storage, 'images/' + primaryKey);
+  var downloadURL = null
 
   try {
     const snapshot = await uploadString(storageRef, imageStr);
     console.log('File uploaded successfully:', snapshot);
 
-    // Get the download URL for the uploaded file
-    const downloadURL = await getDownloadURL(storageRef); //get it via key?
+    downloadURL = await getDownloadURL(storageRef); //acts as src for img components
     console.log('Download URL:', downloadURL);
-
   } catch (error) {
     console.error('Error uploading file:', error);
     throw error;
@@ -41,7 +40,7 @@ export async function uploadPostCard(title_str,imageStr,like_cnt){
 
   //upload post card to firebase
   const docRef = await addDoc(collection(db, "Gallery"), {
-    imgSrc: primaryKey,
+    imgSrc: downloadURL,
     likes: like_cnt,
     title: title_str
     });
@@ -81,38 +80,3 @@ export async function deletePostCard(id){
 }
 
 export default db;
-
-/*
-sessionstorage ersatz
-
-// Open a database
-const request = indexedDB.open('myDatabase', 1);
-
-request.onupgradeneeded = function(event) {
-  const db = event.target.result;
-
-  // Create an object store
-  const objectStore = db.createObjectStore('images', { keyPath: 'id', autoIncrement: true });
-};
-
-request.onsuccess = function(event) {
-  const db = event.target.result;
-
-  // Add an image to the object store
-  const transaction = db.transaction(['images'], 'readwrite');
-  const objectStore = transaction.objectStore('images');
-
-  const imageBlob =; // Blob or ArrayBuffer of your image
-  const newItem = { image: imageBlob };
-  objectStore.add(newItem);
-
-  transaction.oncomplete = function() {
-    console.log('Image added to IndexedDB');
-  };
-};
-
-request.onerror = function(event) {
-  console.error('Error opening IndexedDB', event);
-};
-
-*/

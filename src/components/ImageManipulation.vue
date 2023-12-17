@@ -1,13 +1,15 @@
 <script>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { uploadPostCard } from '../components/db';
+import { getDBImage, setDBImage } from "../components/localDB"
 export default {
   setup() {
     //sticker selection
     const stickerDialog = ref(false);
     const stickers = ref(['Angry', 'Big Angry', 'Circle S', 'Circle M', 'Circle L', 'Speed L', 'Speed R'])
-    const selectedSticker = ref({sticker:"public/user1-128x128.jpg",scale:0})
+    const selectedSticker = ref({ sticker: "public/user1-128x128.jpg", scale: 0 })
     //setup of image
-    const image = ref(localStorage.getItem('uploadedImage'));
+    const image = ref(null);
     const imageAvailable = ref(!!image.value);
     // drawing variables
     const cursorX = ref(0);
@@ -16,8 +18,13 @@ export default {
     const allElements = ref([]);
     const scaleFactorX = ref(1);
     const scaleFactorY = ref(1);
+
     const updateImage = () => {
-      image.value = localStorage.getItem('uploadedImage');
+      getDBImage().then((imageData) => {
+        image.value = imageData;
+      }).catch(error => {
+        console.error('Error getting image:', error);
+      });
       imageAvailable.value = !!image.value;
       redrawCanvas();
       console.log("updated image");
@@ -32,14 +39,13 @@ export default {
 
     //button listeners
     const buttonText = () => {
-      if(!!image.value) {
+      if (!!image.value) {
         createTextElement("click to edit");
       }
     };
 
     const buttonSave = () => {
       if (!!image.value) {
-        //redrawCanvas();
         try {
           console.log(`Number of saved Elements: ${allElements.value.length}`);
           const canvas = document.getElementById("canvas");
@@ -47,24 +53,25 @@ export default {
           combinedImage.src = canvas.toDataURL();
           combinedImage.onload = () => {
             try {
-              localStorage.setItem('uploadedImage', null);
-              localStorage.setItem('uploadedImage', combinedImage.src);
-              allElements.value = [];
-              selectedElement.value = null;
-              window.dispatchEvent(new Event('updateDisplay'));
-              window.dispatchEvent(new Event('saveImage'));
-              const title = prompt("Enter the title for the new postcard:");
-              if (title) {
-                window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } }));
-              }
-              alert("Saved your changes. The image is now available in the gallery.");
+              setDBImage(combinedImage.src).then(() => {
+                allElements.value = [];
+                selectedElement.value = null;
+                window.dispatchEvent(new Event('updateDisplay'));
+                window.dispatchEvent(new Event('saveImage'));
+                const title = prompt("Enter the title for the new postcard:");
+                if (title) {
+                  uploadPostCard(title, combinedImage.src, 0);
+                  //window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } })); TODO
+                }
+                alert("Saved your changes. The image will be available in the gallery shortly.");
+              });
             } catch (e) {
-              console.log("Saving failed, cache full");
+              console.log("Saving failed", e);
               alert("Your browser's cache overflowed. Try again with a smaller image.");
             }
           };
         } catch (e) {
-          console.log("Saving failed, cache full");
+          console.log("Saving failed", e);
           alert("Your browser's cache overflowed. Try again with a smaller image.");
         }
       }
@@ -78,8 +85,8 @@ export default {
       stickerDialog.value = false;
     };
 
-    const selectSticker = (selection) =>  {
-      if(!!image.value) {
+    const selectSticker = (selection) => {
+      if (!!image.value) {
         let img_scale;
         const canvas = document.getElementById("canvas");
         if (canvas.width < canvas.height) {
@@ -89,28 +96,28 @@ export default {
         }
         switch (selection) {
           case "Angry":
-            selectedSticker.value = {sticker:"public/angry.png",scale:0.1*img_scale};
+            selectedSticker.value = { sticker: "public/angry.png", scale: 0.1 * img_scale };
             break;
           case "Big Angry":
-            selectedSticker.value = {sticker:"public/angry.png",scale:0.15*img_scale};
+            selectedSticker.value = { sticker: "public/angry.png", scale: 0.15 * img_scale };
             break;
           case "Circle S":
-            selectedSticker.value = {sticker:"public/circle.png",scale:0.05*img_scale};
+            selectedSticker.value = { sticker: "public/circle.png", scale: 0.05 * img_scale };
             break;
           case "Circle M":
-            selectedSticker.value = {sticker:"public/circle.png",scale:0.1*img_scale};
+            selectedSticker.value = { sticker: "public/circle.png", scale: 0.1 * img_scale };
             break;
           case "Circle L":
-            selectedSticker.value = {sticker:"public/circle.png",scale:0.15*img_scale};
+            selectedSticker.value = { sticker: "public/circle.png", scale: 0.15 * img_scale };
             break;
           case "Speed L":
-            selectedSticker.value = {sticker:"public/speed_left.png",scale:0.15*img_scale};
+            selectedSticker.value = { sticker: "public/speed_left.png", scale: 0.15 * img_scale };
             break;
           case "Speed R":
-            selectedSticker.value = {sticker:"public/speed_right.png",scale:0.15*img_scale};
+            selectedSticker.value = { sticker: "public/speed_right.png", scale: 0.15 * img_scale };
             break;
           default:
-            selectedSticker.value = {sticker:"public/user1-128x128.jpg",scale:0.99*img_scale};
+            selectedSticker.value = { sticker: "public/user1-128x128.jpg", scale: 0.99 * img_scale };
             break;
         }
         closeDialog();
@@ -123,7 +130,7 @@ export default {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       //const text = "click to edit";
-      const textarea = {type:"text",text:text,size:50,x:10,y:10,width:0,height:0};
+      const textarea = { type: "text", text: text, size: 50, x: 10, y: 10, width: 0, height: 0 };
       allElements.value.push(textarea);
       drawTextarea(ctx, textarea);
       makeMovable(canvas);
@@ -135,7 +142,7 @@ export default {
       const img = new Image();
       img.src = selectedSticker.value.sticker;
       img.onload = () => {
-        const sticker = {type:"sticker",image:img,x:10,y:10,scale:selectedSticker.value.scale};
+        const sticker = { type: "sticker", image: img, x: 10, y: 10, scale: selectedSticker.value.scale };
         allElements.value.push(sticker);
         drawSticker(ctx, sticker);
         makeMovable(canvas);
@@ -152,7 +159,7 @@ export default {
     const drawTextarea = (context, textarea) => {
       const textSize = textarea.size;
       context.font = `${textSize}px Lobster`;
-      context.fillText(textarea.text,textarea.x,textarea.y+textSize);
+      context.fillText(textarea.text, textarea.x, textarea.y + textSize);
       const textMetrics = context.measureText(textarea.text);
       textarea.height = textSize;
       textarea.width = textMetrics.width;
@@ -167,14 +174,14 @@ export default {
       img.onload = () => { // needed, so resizing works reliably
         canvas.height = img.height;
         canvas.width = img.width;
-        ctx.drawImage(img,0,0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         allElements.value.forEach(element => {
           switch (element.type) {
             case "sticker":
-              drawSticker(ctx,element);
+              drawSticker(ctx, element);
               break;
             case "text":
-              drawTextarea(ctx,element)
+              drawTextarea(ctx, element)
               break;
           }
         });
@@ -188,12 +195,12 @@ export default {
       scaleFactorY.value = canvas.height / rect.height;
       var isDraggable = false;
 
-      canvas.onmousedown = function(event) {
+      canvas.onmousedown = function (event) {
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
         try {
           console.log(`click (${cursorX.value}/${cursorY.value}) text (${selectedElement.value.x}/${selectedElement.value.y}/w:${selectedElement.value.width}/h:${selectedElement.value.height})`);
-        } catch {}
+        } catch { }
         allElements.value.forEach(element => {
           if (isPointInsideElement(cursorX.value, cursorY.value, element)) {
             selectedElement.value = element;
@@ -203,7 +210,7 @@ export default {
         });
       };
 
-      canvas.onmousemove = function(event) {
+      canvas.onmousemove = function (event) {
         if (isDraggable) {
           cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
           cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
@@ -212,19 +219,19 @@ export default {
         }
       };
 
-      canvas.onmouseup = function(event) {
+      canvas.onmouseup = function (event) {
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
         console.log(`mouseup @ (${cursorX.value}/${cursorY.value})`)
         if (isDraggable) {
-          switch (selectedElement.value.type){
+          switch (selectedElement.value.type) {
             case "sticker":
-              selectedElement.value.x = cursorX.value - selectedElement.value.scale * selectedElement.value.image.width/2;
-              selectedElement.value.y = cursorY.value - selectedElement.value.scale * selectedElement.value.image.height/2;
+              selectedElement.value.x = cursorX.value - selectedElement.value.scale * selectedElement.value.image.width / 2;
+              selectedElement.value.y = cursorY.value - selectedElement.value.scale * selectedElement.value.image.height / 2;
               break;
             case "text":
-              selectedElement.value.x = cursorX.value - selectedElement.value.width/2;
-              selectedElement.value.y = cursorY.value - selectedElement.value.height/2;
+              selectedElement.value.x = cursorX.value - selectedElement.value.width / 2;
+              selectedElement.value.y = cursorY.value - selectedElement.value.height / 2;
               break;
             default:
               selectedElement.value.x = cursorX.value;
@@ -236,7 +243,7 @@ export default {
         isDraggable = false;
       };
 
-      canvas.onmouseout = function(e) {
+      canvas.onmouseout = function (e) {
         isDraggable = false;
       };
     }
@@ -246,38 +253,38 @@ export default {
       const ctx = canvas.getContext("2d");
       switch (element.type) {
         case "sticker":
-          ctx.fillRect(element.x,element.y,10,10);
-          ctx.fillRect(element.x,element.y + element.scale * element.image.height,10,10);
-          ctx.fillRect(element.x + element.scale * element.image.width,element.y,10,10);
-          ctx.fillRect(element.x + element.scale * element.image.width,element.y + element.scale * element.image.height,10,10);
+          ctx.fillRect(element.x, element.y, 10, 10);
+          ctx.fillRect(element.x, element.y + element.scale * element.image.height, 10, 10);
+          ctx.fillRect(element.x + element.scale * element.image.width, element.y, 10, 10);
+          ctx.fillRect(element.x + element.scale * element.image.width, element.y + element.scale * element.image.height, 10, 10);
           return (
-              pointX >= element.x &&
-              pointX <= element.x + element.scale * element.image.width &&
-              pointY >= element.y &&
-              pointY <= element.y + element.scale * element.image.height
+            pointX >= element.x &&
+            pointX <= element.x + element.scale * element.image.width &&
+            pointY >= element.y &&
+            pointY <= element.y + element.scale * element.image.height
           );
         case "text":
-          ctx.fillRect(element.x,element.y,10,10);
-          ctx.fillRect(element.x,element.y + element.height,10,10);
-          ctx.fillRect(element.x + element.width,element.y,10,10);
-          ctx.fillRect(element.x + element.width,element.y + element.height,10,10);
+          ctx.fillRect(element.x, element.y, 10, 10);
+          ctx.fillRect(element.x, element.y + element.height, 10, 10);
+          ctx.fillRect(element.x + element.width, element.y, 10, 10);
+          ctx.fillRect(element.x + element.width, element.y + element.height, 10, 10);
           return (
-              pointX >= element.x &&
-              pointX <= element.x + element.width &&
-              pointY >= element.y &&
-              pointY <= element.y + element.height
+            pointX >= element.x &&
+            pointX <= element.x + element.width &&
+            pointY >= element.y &&
+            pointY <= element.y + element.height
           );
       }
     };
 
     const readKeyboardInput = (event) => {
       if (selectedElement.value) {
-        if (selectedElement.value.type == "text"){
+        if (selectedElement.value.type == "text") {
           const keyPressed = event.key;
           // add backspace functionality
           switch (keyPressed) {
             case "Backspace":
-              selectedElement.value.text = selectedElement.value.text.slice(0,-1);
+              selectedElement.value.text = selectedElement.value.text.slice(0, -1);
               redrawCanvas();
               break;
             case "Tab":
@@ -289,14 +296,14 @@ export default {
               redrawCanvas();
               break;
             case "PageDown":
-              selectedElement.value.size = Math.max(5, selectedElement.value.size-5);
+              selectedElement.value.size = Math.max(5, selectedElement.value.size - 5);
               redrawCanvas();
               break;
             default:
               if (keyPressed.length == 1) {
                 selectedElement.value.text += keyPressed;
                 redrawCanvas();
-              } else {console.log(keyPressed)}
+              } else { console.log(keyPressed) }
               break;
           }
         }
@@ -307,9 +314,7 @@ export default {
     onMounted(() => {
       window.addEventListener('updateDisplay', updateDisplayEventListener);
       window.addEventListener('keydown', readKeyboardInput);
-      if (imageAvailable.value) {
-        updateImage();
-      }
+      updateImage();
     });
 
     onBeforeUnmount(() => {
@@ -331,7 +336,7 @@ export default {
 </script>
 
 <template>
-  <v-container v-if = "imageAvailable" class="button-container">
+  <v-container v-if="imageAvailable" class="button-container">
     <v-btn @click="buttonText"> Text </v-btn>
     <v-btn @click="openDialog">Stickers</v-btn>
 
@@ -355,7 +360,7 @@ export default {
 
     <v-btn @click="buttonSave" style="background-color: #63775B; color: white"> Save </v-btn>
   </v-container>
-  <v-container class = "image-manipulation">
+  <v-container class="image-manipulation">
     <canvas id="canvas" width="0" height="0"></canvas>
   </v-container>
 </template>

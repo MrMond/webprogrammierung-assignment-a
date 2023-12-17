@@ -19,7 +19,7 @@ export async function getDb() {
             }
 
             request.onsuccess = function (event) {
-                console.log("session storage set up");
+                console.log("new session storage set up");
                 resolve(event.target.result);
             }
 
@@ -47,7 +47,7 @@ export async function setDBImage(image) {
         var req = objectStore.put({ id: "userImg", image: image });
 
         req.onsuccess = function (event) {
-            console.log("set DB");
+            console.log("set data to session storage");
             resolve();
         };
 
@@ -68,7 +68,7 @@ export async function getDBImage() {
 
         req.onsuccess = function (event) {
             let image = event.target.result ? event.target.result.image : null;
-            console.log("get DB");
+            console.log("got data from session storage");
             resolve(image);
         };
 

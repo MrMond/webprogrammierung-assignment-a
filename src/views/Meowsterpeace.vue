@@ -113,7 +113,7 @@ function loadGalleryData() {
 
 
 
-/*Methode zum hinzufügen eines Memes in er Gallery*/
+/*Methode zum hinzufügen eines Memes in der Gallery*/
 const openPostcardDetails = (event) => {
   // Öffnen das Dialogfensters für die Eingabe
   const { title, imgSrc } = event.detail;

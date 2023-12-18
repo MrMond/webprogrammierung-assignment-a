@@ -78,7 +78,8 @@ const isMini = computed(() => {
   color: white;
   font-family: 'Times New Roman', 'serif';
   font-size: 45px;
-  margin-bottom: 55vh;
+  margin-bottom: 45vh;
+  margin-top: 10vh;
   text-align: center;
 }
 

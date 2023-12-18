@@ -1,5 +1,4 @@
 <script>
-import { setDBImage } from "../components/localDB"
 export default {
   data() {
     return {
@@ -29,9 +28,10 @@ export default {
       const reader = new FileReader();
       reader.onload = () => {
         this.image = reader.result;
-        setDBImage(this.image).then(() => {
+        window.dispatchEvent(new CustomEvent('updateDisplay',{ detail: { imgSrc: this.image } }));
+        /*setDBImage(this.image).then(() => {
           window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
-        });
+        });*/
       };
       reader.readAsDataURL(image);
     },
@@ -52,9 +52,7 @@ export default {
 
     selectOption(selection) {
       this.image = selection
-      setDBImage(this.image).then(() => {
-        window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
-      });
+      window.dispatchEvent(new CustomEvent('updateDisplay',{ detail: { imgSrc: this.image } }));
       this.closeDialog();
     },
 

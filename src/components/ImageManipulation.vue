@@ -22,19 +22,23 @@ export default {
     const updateImage = () => {
       getDBImage().then((imageData) => {
         image.value = imageData;
+        imageAvailable.value = !!image.value;
+        redrawCanvas();
+        console.log("updated image");
       }).catch(error => {
         console.error('Error getting image:', error);
       });
-      imageAvailable.value = !!image.value;
-      redrawCanvas();
-      console.log("updated image");
+
     };
 
-    const updateDisplayEventListener = () => {
-      console.log("received picture");
+    const updateDisplayEventListener = (event) => {
+      const imgSrc = event.detail.imgSrc;
+      console.log(`recieved image, not null? ${!!imgSrc}`);
       selectedElement.value = null;
       allElements.value = [];
-      updateImage();
+      setDBImage(imgSrc).then(() => {
+        updateImage();
+      });
     };
 
     //button listeners
@@ -56,13 +60,14 @@ export default {
               setDBImage(combinedImage.src).then(() => {
                 allElements.value = [];
                 selectedElement.value = null;
-                window.dispatchEvent(new Event('updateDisplay'));
-                window.dispatchEvent(new Event('saveImage'));
                 const title = prompt("Enter the title for the new postcard:");
                 if (title) {
-                  uploadPostCard(title, combinedImage.src, 0);
+                  uploadPostCard(title, combinedImage.src, 0).then(() => {
+                    window.dispatchEvent(new Event('saveImage'));
+                  });
                   //window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } })); TODO
                 }
+                window.dispatchEvent(new CustomEvent('updateDisplay', { detail: { imgSrc: combinedImage.src } }));
                 alert("Saved your changes. The image will be available in the gallery shortly.");
               });
             } catch (e) {
@@ -159,7 +164,11 @@ export default {
     const drawTextarea = (context, textarea) => {
       const textSize = textarea.size;
       context.font = `${textSize}px Lobster`;
+      context.fillStyle = 'white';
+      context.strokeStyle = 'black';
+      context.lineWidth = textSize / 15;
       context.fillText(textarea.text, textarea.x, textarea.y + textSize);
+      context.strokeText(textarea.text, textarea.x, textarea.y + textSize);
       const textMetrics = context.measureText(textarea.text);
       textarea.height = textSize;
       textarea.width = textMetrics.width;

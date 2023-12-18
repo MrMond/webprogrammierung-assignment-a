@@ -20,10 +20,10 @@ export default {
     const scaleFactorY = ref(1);
 
     const updateImage = () => {
-      getDBImage().then((imageData) => {
+      getDBImage().then((imageData) => { //read data from session storage
         image.value = imageData;
         imageAvailable.value = !!image.value;
-        redrawCanvas();
+        redrawCanvas(); //update shown image
         console.log("updated image");
       }).catch(error => {
         console.error('Error getting image:', error);
@@ -35,8 +35,8 @@ export default {
       const imgSrc = event.detail.imgSrc;
       console.log(`recieved image, not null? ${!!imgSrc}`);
       selectedElement.value = null;
-      allElements.value = [];
-      setDBImage(imgSrc).then(() => {
+      allElements.value = []; // clear user elements (stickers/text)
+      setDBImage(imgSrc).then(() => { //update session storage
         updateImage();
       });
     };
@@ -54,20 +54,20 @@ export default {
           console.log(`Number of saved Elements: ${allElements.value.length}`);
           const canvas = document.getElementById("canvas");
           const combinedImage = new Image();
-          combinedImage.src = canvas.toDataURL();
+          combinedImage.src = canvas.toDataURL(); //combine all movable elements to a single image
           combinedImage.onload = () => {
             try {
-              setDBImage(combinedImage.src).then(() => {
+              setDBImage(combinedImage.src).then(() => { //update session storage
                 allElements.value = [];
-                selectedElement.value = null;
+                selectedElement.value = null; //clear all active elements
                 const title = prompt("Enter the title for the new postcard:");
                 if (title) {
-                  uploadPostCard(title, combinedImage.src, 0).then(() => {
+                  uploadPostCard(title, combinedImage.src, 0).then(() => { //save to firebase
                     window.dispatchEvent(new Event('saveImage'));
                   });
                   //window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } })); TODO
                 }
-                window.dispatchEvent(new CustomEvent('updateDisplay', { detail: { imgSrc: combinedImage.src } }));
+                window.dispatchEvent(new CustomEvent('updateDisplay', { detail: { imgSrc: combinedImage.src } })); //call updateImage with new image
                 alert("Saved your changes. The image will be available in the gallery shortly.");
               });
             } catch (e) {
@@ -90,10 +90,10 @@ export default {
       stickerDialog.value = false;
     };
 
-    const selectSticker = (selection) => {
+    const selectSticker = (selection) => { //sticker selection from dialog box
       if (!!image.value) {
         let img_scale;
-        const canvas = document.getElementById("canvas");
+        const canvas = document.getElementById("canvas"); // decide on scale factor, to combat too small elements
         if (canvas.width < canvas.height) {
           img_scale = scaleFactorY.value;
         } else {
@@ -134,10 +134,9 @@ export default {
     const createTextElement = (text) => {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
-      //const text = "click to edit";
       const textarea = { type: "text", text: text, size: 50, x: 10, y: 10, width: 0, height: 0 };
       allElements.value.push(textarea);
-      drawTextarea(ctx, textarea);
+      drawTextarea(ctx, textarea); //make interactable textarea appear
       makeMovable(canvas);
     };
 
@@ -149,7 +148,7 @@ export default {
       img.onload = () => {
         const sticker = { type: "sticker", image: img, x: 10, y: 10, scale: selectedSticker.value.scale };
         allElements.value.push(sticker);
-        drawSticker(ctx, sticker);
+        drawSticker(ctx, sticker); //make interactable sticker appear
         makeMovable(canvas);
       };
     }
@@ -180,17 +179,17 @@ export default {
       const ctx = canvas.getContext("2d");
       const img = new Image();
       img.src = image.value;
-      img.onload = () => { // needed, so resizing works reliably
+      img.onload = () => { //resize canvas
         canvas.height = img.height;
         canvas.width = img.width;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); //draw user provided image
         allElements.value.forEach(element => {
           switch (element.type) {
             case "sticker":
-              drawSticker(ctx, element);
+              drawSticker(ctx, element); //draw all stickers
               break;
             case "text":
-              drawTextarea(ctx, element)
+              drawTextarea(ctx, element) //draw all text elements
               break;
           }
         });
@@ -198,13 +197,13 @@ export default {
       console.log("redrew canvas");
     };
 
-    const makeMovable = (canvas) => {
+    const makeMovable = (canvas) => { //handle movable entities
       const rect = canvas.getBoundingClientRect();
       scaleFactorX.value = canvas.width / rect.width;
       scaleFactorY.value = canvas.height / rect.height;
       var isDraggable = false;
 
-      canvas.onmousedown = function (event) {
+      canvas.onmousedown = function (event) { //click down --> select element
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
         try {
@@ -219,7 +218,7 @@ export default {
         });
       };
 
-      canvas.onmousemove = function (event) {
+      canvas.onmousemove = function (event) { //update position
         if (isDraggable) {
           cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
           cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
@@ -228,7 +227,7 @@ export default {
         }
       };
 
-      canvas.onmouseup = function (event) {
+      canvas.onmouseup = function (event) { //let go --> reposition element
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
         console.log(`mouseup @ (${cursorX.value}/${cursorY.value})`)
@@ -257,7 +256,7 @@ export default {
       };
     }
 
-    const isPointInsideElement = (pointX, pointY, element) => {
+    const isPointInsideElement = (pointX, pointY, element) => { // position check
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
       switch (element.type) {
@@ -286,11 +285,10 @@ export default {
       }
     };
 
-    const readKeyboardInput = (event) => {
+    const readKeyboardInput = (event) => { //handle keyboard interactions
       if (selectedElement.value) {
         if (selectedElement.value.type == "text") {
           const keyPressed = event.key;
-          // add backspace functionality
           switch (keyPressed) {
             case "Backspace":
               selectedElement.value.text = selectedElement.value.text.slice(0, -1);

@@ -4,18 +4,18 @@ export default {
     return {
       image: null,
       selectionDialog: false,
-      options: ["public/adorable_cat.jpg", "public/cat_in_a_box.jpg", "public/cute_kitten.jpg", "public/fluffy_kitty.jpg", "public/sleeping_cat.jpg"],
+      options: ["public/adorable_cat.jpg", "public/cat_in_a_box.jpg", "public/cute_kitten.jpg", "public/fluffy_kitty.jpg", "public/sleeping_cat.jpg"], //dialog box options
     };
   },
 
   methods: {
-    handleDrop(event) {
+    handleDrop(event) { //drag and drop of files
       event.preventDefault();
 
       const files = event.dataTransfer.files;
       if (files.length > 0) {
         const image = files[0];
-        if (this.isTypeAllowed(image.type)) {
+        if (this.isTypeAllowed(image.type)) { //type filter for common picture formats
           this.handleImage(image);
         } else {
           console.log("recieved unsupported file")
@@ -27,11 +27,8 @@ export default {
     handleImage(image) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.image = reader.result;
-        window.dispatchEvent(new CustomEvent('updateDisplay',{ detail: { imgSrc: this.image } }));
-        /*setDBImage(this.image).then(() => {
-          window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
-        });*/
+        this.image = reader.result; //image comes from user
+        window.dispatchEvent(new CustomEvent('updateDisplay',{ detail: { imgSrc: this.image } })); //image sent to other parts of code
       };
       reader.readAsDataURL(image);
     },
@@ -41,7 +38,7 @@ export default {
       return allowedTypes.includes(fileType);
     },
 
-    // Dialog
+    // Dialog box for provided images
     openDialog() {
       this.selectionDialog = true;
     },
@@ -51,11 +48,10 @@ export default {
     },
 
     selectOption(selection) {
-      this.image = selection
-      window.dispatchEvent(new CustomEvent('updateDisplay',{ detail: { imgSrc: this.image } }));
+      this.image = selection //image selection comes from provided images
+      window.dispatchEvent(new CustomEvent('updateDisplay',{ detail: { imgSrc: this.image } })); //sent for further use
       this.closeDialog();
     },
-
 
   },
 };

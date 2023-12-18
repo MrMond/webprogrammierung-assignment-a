@@ -23,3 +23,8 @@ Galerie:
 
 views
 /Meowsterpeace
+
+DBs:
+components
+/db.js
+/localDB.js

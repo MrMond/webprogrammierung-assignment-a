@@ -75,7 +75,7 @@ import { useRoute, useRouter } from 'vue-router'
 
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
-
+  
 const { name } = useDisplay()
 
 const isMini = computed(() => {

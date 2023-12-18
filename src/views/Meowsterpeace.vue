@@ -6,7 +6,8 @@
     <v-row>
       <v-col v-for="(card, index) in sortedGalleryData" :key="index" cols="auto">
         <div class="gallery-card-container" @click="showModal(card)">
-          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes" @update-likes="updateLikes(card, $event)" />
+          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
+            @update-likes="updateLikes(card, $event)" />
         </div>
       </v-col>
     </v-row>
@@ -19,13 +20,8 @@
       </template>
       <v-card>
         <v-card-text>
-          <PostCard
-              :title="selectedPostCard.title"
-              :imgSrc="selectedPostCard.imgSrc"
-              :likes="selectedPostCard.likes"
-              :largeView="true"
-              @update-likes="updateLikes(selectedPostCard, $event)"
-          />
+          <PostCard :title="selectedPostCard.title" :imgSrc="selectedPostCard.imgSrc" :likes="selectedPostCard.likes"
+            :largeView="true" @update-likes="updateLikes(selectedPostCard, $event)" />
         </v-card-text>
         <v-card-actions>
           <v-btn class="cardInteractable" @click="closeModal">Close</v-btn>
@@ -55,13 +51,14 @@
 <script setup>
 /* imports und refs*/
 import PostCard from "@/components/PostCard.vue";
-import { ref, computed,} from "vue";
+import { ref, computed, onBeforeUnmount, onMounted } from "vue";
+import { getPostCards, deletePostCard, updatePostCard } from "../components/db"
 
 const showModalDialog = ref(false);
 const showAddPostcardDialog = ref(false);
 const selectedPostCard = ref(null);
 const newPostcard = ref({ title: '', imgSrc: '' });
-const galleryData = ref(loadGalleryData());
+const galleryData = ref([{ id: null, likes: 0, title: "", imgSrc: "" }]);
 
 
 /*Methode zum Öffnen der detaillierten Ansicht*/
@@ -83,9 +80,6 @@ const updateLikes = (card, newLikes) => {
   const index = galleryData.value.findIndex(item => item.title === card.title);
   if (index !== -1) {
     galleryData.value[index].likes = newLikes;
-
-    // Update local storage
-    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
   }
 };
 
@@ -99,21 +93,23 @@ const sortedGalleryData = computed(() => {
   return [...galleryData.value].sort((a, b) => b.likes - a.likes);
 });
 
-/*Methode zum Laden des gallery_data Arrays aus dem localstorage. Die fünf dummys dienen als Standard, falls leer*/
-function loadGalleryData() {
-  const data = localStorage.getItem('gallery_data');
-  return data ? JSON.parse(data) : [
-    { title: "Cat in a Box", imgSrc: "/cat_in_a_box.jpg", likes: 17 },
-    { title: "Fluffy Kitty", imgSrc: "/fluffy_kitty.jpg", likes: 5 },
-    { title: "Cute Kitten", imgSrc: "/cute_kitten.jpg", likes: 0 },
-    { title: "Sleeping Cat", imgSrc: "/sleeping_cat.jpg", likes: 13 },
-    { title: "Adorable Cat", imgSrc: "/adorable_cat.jpg", likes: 11 },
-  ];
+/*Methode zum Laden der karten aus der firebase. Die fünf dummys dienen als Standard, falls leer*/
+async function loadGalleryData() {
+  getPostCards().then(data => {
+    if (!!data) {
+      return data;
+    } else {
+      return [{ id: null, likes: 0, title: "Cat in a box", imgSrc: "public/cat_in_a_box.jpg" }];
+    }
+  }).catch((error) => {
+    console.warn("loading galery failed " + error);
+    return [{ id: null, likes: 0, title: "Cat in a box", imgSrc: "public/cat_in_a_box.jpg" }];
+  });
 }
 
 
 
-/*Methode zum hinzufügen eines Memes in der Gallery*/
+/*Methode zum hinzufügen eines Memes in der Gallery*/ //redundant??
 const openPostcardDetails = (event) => {
   // Öffnen das Dialogfensters für die Eingabe
   const { title, imgSrc } = event.detail;
@@ -146,14 +142,29 @@ const removePostcard = () => {
   if (selectedPostCard.value) {
     const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
     if (index !== -1) {
+      const id = selectedPostCard.value.id;
       // Entfernen aus galleryData
       galleryData.value.splice(index, 1);
-      // Update local storage
-      localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+      // Update firebase
+      deletePostCard(id);
       showModalDialog.value = false;
     }
   }
 };
+
+onMounted(async () => {
+  await loadGalleryData();
+  console.log(`downloaded ${galleryData.value.length} cards`);
+});
+
+onBeforeUnmount(() => { //in der firebase alle karten updaten
+  galleryData.value.forEach(element => {
+    if (!!element.id) {
+      updatePostCard(element.title, element.imgSrc, element.likes, element.id);
+      console.log(`updated Likes to ${element.likes} for ${element.title}`);
+    }
+  });
+});
 </script>
 
 

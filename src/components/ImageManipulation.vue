@@ -65,7 +65,6 @@ export default {
                   uploadPostCard(title, combinedImage.src, 0).then(() => { //save to firebase
                     window.dispatchEvent(new Event('saveImage'));
                   });
-                  //window.dispatchEvent(new CustomEvent('openPostcardDetails', { detail: { title, imgSrc: combinedImage.src } })); TODO
                 }
                 window.dispatchEvent(new CustomEvent('updateDisplay', { detail: { imgSrc: combinedImage.src } })); //call updateImage with new image
                 alert("Saved your changes. The image will be available in the gallery shortly.");

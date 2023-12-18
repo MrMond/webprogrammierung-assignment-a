@@ -89,20 +89,7 @@ const isMini = computed(() => {
   }
 })
 
-const height = computed(() => {
-  // name is reactive and
-  // must use .value
-  switch (name.value) {
-    case 'xs': return 220
-    case 'sm': return 400
-    case 'md': return 500
-    case 'lg': return 600
-    case 'xl': return 800
-    case 'xxl': return 1200
-  }
 
-  return undefined
-})
 
 const drawer = ref(false)
 const route = useRoute()

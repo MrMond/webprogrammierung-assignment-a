@@ -1,10 +1,10 @@
 Team Mitglieder:
 
-Joel Bück (4860895): Layout
+Joel Bück (4860895): Layout, Curiosities
 
-Martin Schauer (7961802): Generator
+Martin Schauer (7961802): Generator, Firebase
 
-Lukas Runge (): Gallerie
+Lukas Runge (7590014): Galerie, responsive Design
 
 
 ----------------------------------

@@ -22,13 +22,14 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-family: 'Arial', 'serif';
   font-size: 16px;
 }
 
 /* Stil der Catchphrase */
 .catchphrase {
   color: white;
-  font-family: 'DialogInput';
+  font-family: 'Times New Roman', 'serif';
   font-size: 45px;
   margin-bottom: 20px;
 }

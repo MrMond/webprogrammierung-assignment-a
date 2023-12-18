@@ -1,12 +1,16 @@
-<!-- PostCard.vue -->
+
 <template>
+
+  <!--Erstellung von VCard als Layout der Memes. Darstellung ist abhängig von "largeView"-->
   <VCard
       class="mx-auto"
       :max-width="largeView ? 600 : 280"
       :height="largeView ? 'auto' : 200"
       :style="{ cursor: largeView ? 'auto' : 'pointer' }"
   >
-    <VCardTitle>{{ title }}</VCardTitle>
+
+    <!--Darstellung des Titels, einer Trennlinie und des Memebildes-->
+    <VCardTitle class="title">{{ title }}</VCardTitle>
     <VDivider />
     <VImg
         v-if="imgSrc"
@@ -16,57 +20,49 @@
         :width="largeView ? '100%' : 'auto'"
     />
 
-    <!-- Likes-Anzeige und Aktualisierung nur in der größeren Ansicht -->
+    <!--wenn largeView wahr ist, wird hier der LikeButton dargestellt -->
     <v-row v-if="largeView">
       <v-col>
-        <span>{{ likes }} Likes</span>
-        <v-btn @click="changeLikesDialog">Ändern</v-btn>
+        <span class="cardInteractable">{{ likes }} Likes</span>
+        <v-btn @click="incrementLikes" icon>
+          <v-icon>{{ liked ? 'mdi-heart' : 'mdi-heart-outline' }}</v-icon>
+        </v-btn>
       </v-col>
     </v-row>
-
-    <!-- Dialog zur Änderung der Likes -->
-    <v-dialog v-model="changeLikesDialogVisible" max-width="400">
-      <v-card>
-        <v-card-title>Ändere die Likes</v-card-title>
-        <v-card-text>
-          <v-text-field v-model="newLikes" label="Neue Anzahl" type="number" @keydown.enter="saveLikes" />
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="saveLikes">Speichern</v-btn>
-          <v-btn @click="cancelLikesChange">Abbrechen</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </VCard>
 </template>
 
+
+<!-- Festlegen der Props der Memes: Titel, Bildquelle, Anzahl Likes, Anzeigemodus klein oder detailliert. Default setzen des Likes Buttons auf "nicht geliked"-->
 <script>
 export default {
   props: ['title', 'imgSrc', 'likes', 'largeView'],
   data() {
     return {
-      changeLikesDialogVisible: false,
-      newLikes: this.likes,
+      liked: false,
     };
   },
+
+  /* Aufruf der Methode, wenn der Likebutton gedrückt wird: Erhöhung der Likes des geöffneten Memes um 1, Umstellung des Likebuttons*/
   methods: {
-    changeLikesDialog() {
-      this.changeLikesDialogVisible = true;
-    },
-    saveLikes() {
-      const newLikesValue = parseInt(this.newLikes);
-      if (!isNaN(newLikesValue)) {
-        this.$emit('update-likes', newLikesValue);
-        this.changeLikesDialogVisible = false;
-      }
-    },
-    cancelLikesChange() {
-      this.changeLikesDialogVisible = false;
+    incrementLikes() {
+      // Erhöhe die Likes um 1
+      this.$emit('update-likes', this.likes + 1);
+
+      // Setze den Zustand des Herz-Buttons
+      this.liked = true;
     },
   },
 };
+
 </script>
 
 <style scoped>
+.title {
+  font-family: 'Arial', 'serif';
+}
 
+.cardInteractable {
+  font-family: 'Arial', 'serif';
+}
 </style>

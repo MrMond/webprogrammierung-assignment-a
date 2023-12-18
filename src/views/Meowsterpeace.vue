@@ -1,8 +1,8 @@
-<!-- Gallery.vue -->
 <template>
   <v-container>
     <h1>Meowsterpeace Gallery</h1>
 
+    <!-- Abänderung des Templates, dass jedes Meme in einem Container dargestellt wird, der auf Klick reagiert und die "showModal" Methode ausführt-->
     <v-row>
       <v-col v-for="(card, index) in sortedGalleryData" :key="index" cols="auto">
         <div class="gallery-card-container" @click="showModal(card)">
@@ -11,9 +11,8 @@
       </v-col>
     </v-row>
 
-    <v-btn @click="showAddPostcardDialog = true">Add new Postcard</v-btn>
 
-    <!-- Modal for enlarged view -->
+    <!-- Darstellung der detaillierten Ansicht der Memes. Unter Meme in großer Ansicht (in PostCard.vue definiert) Darstellung von Close und Remove Buttons -->
     <v-dialog v-model="showModalDialog" max-width="800">
       <template v-slot:activator="{ on, attrs }">
         <div v-bind="attrs" v-on="on"></div>
@@ -29,54 +28,58 @@
           />
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="closeModal">Close</v-btn>
-          <!-- Neuer Button zum Entfernen -->
-          <v-btn @click="removePostcard">Delete</v-btn>
+          <v-btn class="cardInteractable" @click="closeModal">Close</v-btn>
+          <v-btn class="cardInteractable" @click="confirmDelete">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
 
-    <v-dialog v-model="showAddPostcardDialog" max-width="400">
+    <!-- Bestätigungsdialog für das Löschen -->
+    <v-dialog v-model="showDeleteDialog" max-width="400">
       <v-card>
-        <v-card-title>Add new Postcard</v-card-title>
+        <v-card-title class="headline">Confirm Delete</v-card-title>
         <v-card-text>
-          <v-text-field v-model="newPostcard.title" label="Titel" />
-          <v-text-field v-model="newPostcard.imgSrc" label="Bild-URL" />
-          <v-text-field v-model="newPostcard.likes" label="Likes" />
+          Are you sure you want to delete your meowsterpeace?
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="addNewPostcard">Add</v-btn>
-          <v-btn @click="cancelAddPostcard">Cancel</v-btn>
+          <v-btn @click="cancelDelete">Cancel</v-btn>
+          <v-btn @click="removePostcard" color="red">Delete</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </v-container>
 </template>
 
+
+
 <script setup>
+/* imports und refs*/
 import PostCard from "@/components/PostCard.vue";
-import { ref, computed, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed,} from "vue";
 
 const showModalDialog = ref(false);
 const showAddPostcardDialog = ref(false);
 const selectedPostCard = ref(null);
 const newPostcard = ref({ title: '', imgSrc: '' });
-
 const galleryData = ref(loadGalleryData());
 
+
+/*Methode zum Öffnen der detaillierten Ansicht*/
 const showModal = (card) => {
   selectedPostCard.value = { ...card };
   showModalDialog.value = true;
 };
 
+/* Methode zum Schließen der detaillierten Ansicht*/
 const closeModal = () => {
   showModalDialog.value = false;
 };
 
+/* Methode zur Aktualisierung der Likes eines Memes sowohl lokal, als auch im localstorage*/
 const updateLikes = (card, newLikes) => {
   card.likes = newLikes;
 
-  // Update the likes in galleryData
+  // Update galleryData
   const index = galleryData.value.findIndex(item => item.title === card.title);
   if (index !== -1) {
     galleryData.value[index].likes = newLikes;
@@ -87,53 +90,16 @@ const updateLikes = (card, newLikes) => {
 };
 
 
-const addNewPostcard = () => {
-  const { title } = newPostcard.value;
-
-  if (title) {
-    // Die imgSrc auf das zuletzt gespeicherte Bild setzen
-    const imgSrc = sessionStorage.getItem('uploadedImage') || "/default_image.jpg";
-    const newPost = { title, imgSrc, likes: 0 };
-
-    galleryData.value.push(newPost);
-
-    // Update local storage
-    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
-
-    // Reset form und schließe den Dialog
-    newPostcard.value = { title: '', imgSrc: '' };
-    showAddPostcardDialog.value = false;
-  }
-};
 
 
-const cancelAddPostcard = () => {
-  newPostcard.value = { title: '', imgSrc: '' };
-  showAddPostcardDialog.value = false;
-};
 
-const removePostcard = () => {
-  if (selectedPostCard.value) {
-    // Find the index of the selected postcard
-    const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
 
-    if (index !== -1) {
-      // Remove the postcard from galleryData
-      galleryData.value.splice(index, 1);
-
-      // Update local storage
-      localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
-
-      // Close the modal
-      showModalDialog.value = false;
-    }
-  }
-};
-
+/*methode zum sortieren der Memes absteigend nach Likezahl, Update der reihenfolge bei jeder Änderung der galleryData arrays*/
 const sortedGalleryData = computed(() => {
   return [...galleryData.value].sort((a, b) => b.likes - a.likes);
 });
 
+/*Methode zum Laden des gallery_data Arrays aus dem localstorage. Die fünf dummys dienen als Standard, falls leer*/
 function loadGalleryData() {
   const data = localStorage.getItem('gallery_data');
   return data ? JSON.parse(data) : [
@@ -145,29 +111,61 @@ function loadGalleryData() {
   ];
 }
 
-onBeforeUnmount(() => {
-  // Cleanup if needed
-});
 
+
+/*Methode zum hinzufügen eines Memes in der Gallery*/
 const openPostcardDetails = (event) => {
-  // Hier öffnest du das Dialogfenster für die Eingabe von Titel und Likes
+  // Öffnen das Dialogfensters für die Eingabe
   const { title, imgSrc } = event.detail;
   if (title && imgSrc) {
     selectedPostCard.value = { title, imgSrc, likes: 0 };
     showModalDialog.value = true;
-
-    // Füge die neue Postkarte zum galleryData-Array hinzu
+    // Fügt das neue Meme zum galleryData Array hinzu
     galleryData.value.push({ title, imgSrc, likes: 0 });
-
     // Update local storage
     localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
   }
 };
+
+/* Eventlistener zum Auslösen der openpostcarddetails methode*/
 window.addEventListener('openPostcardDetails', openPostcardDetails);
+
+
+const showDeleteDialog = ref(false);
+
+const confirmDelete = () => {
+  showDeleteDialog.value = true;
+};
+
+const cancelDelete = () => {
+  showDeleteDialog.value = false;
+};
+
+const removePostcard = () => {
+  showDeleteDialog.value = false;
+  if (selectedPostCard.value) {
+    const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
+    if (index !== -1) {
+      // Entfernen aus galleryData
+      galleryData.value.splice(index, 1);
+      // Update local storage
+      localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
+      showModalDialog.value = false;
+    }
+  }
+};
 </script>
 
 
+
+
+<!-- Manuelle Syle Anpassungen für diese Seite-->
 <style scoped>
+h1 {
+  font-family: 'Times New Roman', Times, serif;
+  color: white;
+}
+
 .gallery-card-container {
   cursor: pointer;
   width: 250px;
@@ -176,15 +174,7 @@ window.addEventListener('openPostcardDetails', openPostcardDetails);
   margin: 8px;
 }
 
-.gallery-card-container .v-card {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.gallery-card-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+.cardInteractable {
+  font-family: 'Arial', 'serif';
 }
 </style>

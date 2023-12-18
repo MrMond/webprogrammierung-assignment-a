@@ -1,17 +1,12 @@
 <script>
-import {tr} from "vuetify/locale";
-
+import { setDBImage } from "../components/localDB"
 export default {
   data() {
     return {
       image: null,
       selectionDialog: false,
-      options: ["public/adorable_cat.jpg", "public/cat_in_a_box.jpg","public/cute_kitten.jpg","public/fluffy_kitty.jpg","public/sleeping_cat.jpg"],
+      options: ["public/adorable_cat.jpg", "public/cat_in_a_box.jpg", "public/cute_kitten.jpg", "public/fluffy_kitty.jpg", "public/sleeping_cat.jpg"],
     };
-  },
-  mounted() {
-    // Lade das Bild aus dem Local Storage
-    this.image = localStorage.getItem('uploadedImage');
   },
 
   methods: {
@@ -34,8 +29,9 @@ export default {
       const reader = new FileReader();
       reader.onload = () => {
         this.image = reader.result;
-        sessionStorage.setItem('uploadedImage', this.image);
-        window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
+        setDBImage(this.image).then(() => {
+          window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
+        });
       };
       reader.readAsDataURL(image);
     },
@@ -50,14 +46,15 @@ export default {
       this.selectionDialog = true;
     },
 
-    closeDialog(){
+    closeDialog() {
       this.selectionDialog = false;
     },
 
     selectOption(selection) {
       this.image = selection
-      sessionStorage.setItem('uploadedImage', this.image);
-      window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
+      setDBImage(this.image).then(() => {
+        window.dispatchEvent(new Event('updateDisplay')); //send update to ImageManipulation.vue
+      });
       this.closeDialog();
     },
 
@@ -67,10 +64,7 @@ export default {
 </script>
 
 <template>
-  <v-container
-      class="image-uploader" 
-      @dragover.prevent
-      @drop="handleDrop">
+  <v-container class="image-uploader" @dragover.prevent @drop="handleDrop">
 
     <v-btn v-if="!image" @click="openDialog">Drag and Drop Image or click to select a cat from our selection</v-btn>
 
@@ -92,7 +86,8 @@ export default {
       </v-card>
     </v-dialog>
 
-    <v-btn v-if="image" @click="openDialog">Drag and Drop a replacement Image or click to select a cat from our selection</v-btn>
+    <v-btn v-if="image" @click="openDialog">Drag and Drop a replacement Image or click to select a cat from our
+      selection</v-btn>
 
     <v-dialog v-model="selectionDialog" max-width="400">
       <v-card>
@@ -128,5 +123,6 @@ export default {
   border: none;
   background: none;
   box-shadow: none;
+  font-family: 'Arial', 'serif';
 }
 </style>

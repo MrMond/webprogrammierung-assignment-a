@@ -51,13 +51,31 @@ export async function uploadPostCard(title_str,imageStr,like_cnt){
 // R
 export async function getPostCards(){
   const querySnapshot = await getDocs(collection(db, "Gallery"));
-  const postCards = querySnapshot.docs.map(doc => {
+  const postCards = querySnapshot.docs.map(async (doc) => {
     const data = doc.data();
+    let imgSrc = data.imgSrc || "public/error-image.jpg"; //TODO bild finden und einbinden
+    if (imgSrc.startsWith("https://firebasestorage.googleapis.com/")){
+      try {
+        const response = await fetch(imgSrc); // TODO Access to fetch at 'URL' from origin 'http://localhost:5173' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+        if (response.ok) {
+          const imageData = await response.blob(); // Get image data as a Blob and convert tp URI
+          const dataUri = await blobToDataURI(imageData);
+          imgSrc = dataUri;
+          console.log(imgSrc);
+        } else {// error handeling, because db can be written in manually
+          console.error("Error fetching image:", response.statusText);
+          imgSrc = "public/error-image.jpg";
+        }
+      } catch (error) {
+        console.error("Error fetching image:", error);
+        imgSrc = "public/error-image.jpg";
+      }
+    }
     return {
       id: doc.id,
       likes: data.likes || 0,
       title: data.title || "",
-      imgSrc: data.imgSrc || "public/user1-128x128.jpg",
+      imgSrc: imgSrc,
     };
   });
  return postCards;

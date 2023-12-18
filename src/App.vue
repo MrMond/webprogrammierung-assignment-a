@@ -1,4 +1,9 @@
 <template>
+  <div class="background-container">
+      <div v-if="isMini" class ="background-small"></div>
+      <div v-else class="background-image"></div>
+      
+    </div>
   <VLayout row wrap rounded rounded-md align-start>
     <VAppBar rounded class="white-background">
       <!-- Symbol für die Menüleiste -->
@@ -10,7 +15,7 @@
       </v-toolbar>
     </VAppBar>
 
-    <v-navigation-drawer
+    <v-navigation-drawer 
         v-if="isMini"
         v-model="drawer"
         location="top"
@@ -84,20 +89,7 @@ const isMini = computed(() => {
   }
 })
 
-const height = computed(() => {
-  // name is reactive and
-  // must use .value
-  switch (name.value) {
-    case 'xs': return 220
-    case 'sm': return 400
-    case 'md': return 500
-    case 'lg': return 600
-    case 'xl': return 800
-    case 'xxl': return 1200
-  }
 
-  return undefined
-})
 
 const drawer = ref(false)
 const route = useRoute()
@@ -141,5 +133,32 @@ const handleNavigation = () => {
 
 .logo {
   width: 175px;
+}
+
+.background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+
+.background-image {
+  background-image: url(https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+}
+
+.background-small{
+  background-image: url(https://images.unsplash.com/photo-1506891536236-3e07892564b7?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+  height: 100%;
 }
 </style>

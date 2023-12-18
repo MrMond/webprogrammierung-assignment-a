@@ -15,7 +15,7 @@
       </v-toolbar>
     </VAppBar>
 
-    <v-navigation-drawer
+    <v-navigation-drawer 
         v-if="isMini"
         v-model="drawer"
         location="top"

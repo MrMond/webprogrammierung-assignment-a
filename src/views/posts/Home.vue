@@ -47,7 +47,7 @@ const isMini = computed(() => {
   height: 100vh; /* 100% der Bildschirmhöhe */
   width: 50%;    /* 50% der Bildschirmbreite */
   max-width: 50vw; /* Maximale Breite auf 50% der Bildschirmbreite begrenzen */
-  padding-left: 10vw;
+  padding-left: 5vw;
 }
 
 .container-small {

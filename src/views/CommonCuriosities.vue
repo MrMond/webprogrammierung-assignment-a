@@ -1,5 +1,5 @@
 <template>
-  <div class="faq-page container">
+  <div class="faq-page">
     <v-row>
       <v-col cols="12">
         <h2 class="faq-heading">Common Curiosities</h2>
@@ -7,15 +7,9 @@
     </v-row>
 
     <v-expansion-panels>
-      <v-expansion-panel v-for="(faq, index) in faqs" :key="index" class="faq-panel" style="margin-bottom: 25px;">
-        <v-expansion-panel-header @click="togglePanel(index)" class="faq-question">
-          {{ faq.question }}
-          <v-icon v-if="openPanels.includes(index)">mdi-chevron-up</v-icon>
-          <v-icon v-else>mdi-chevron-down</v-icon>
-        </v-expansion-panel-header>
-        <v-expansion-panel-content v-show="openPanels.includes(index)">
-          <div class="faq-answer">{{ faq.answer }}</div>
-        </v-expansion-panel-content>
+      <v-expansion-panel
+        title="Title"
+        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-10">
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -85,6 +79,7 @@ const closeNewQuestionDialog = () => {
   padding-top: 250px;
   padding-right: 200px;
   padding-left: 200px;
+ 
 }
 
 .faq-heading {

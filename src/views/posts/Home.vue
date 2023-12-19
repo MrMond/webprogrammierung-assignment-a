@@ -6,6 +6,9 @@
     <h1 class="catchphrase-small">Let`s get those Cats memed up!</h1>
     <router-link to="/CatMemeGenerator">
       <button class="styled-button">Start generating</button>
+    </router-link>    
+    <router-link to="/CommonCuriosities">
+      <button class="styled-button2">FAQ</button>
     </router-link>
   </div>
 
@@ -14,7 +17,11 @@
     <router-link to="/CatMemeGenerator">
       <button class="styled-button">Start generating</button>
     </router-link>
+    <router-link to="/CommonCuriosities">
+      <button class="styled-button2">FAQ</button>
+    </router-link>
   </div>
+
 </template>
 
 <script setup>
@@ -61,7 +68,7 @@ const isMini = computed(() => {
   
 }
 
-/* Stil des Button */
+/* Stil des Buttons */
 .styled-button {
   background-color: #63775B;
   color: #fff;
@@ -71,6 +78,20 @@ const isMini = computed(() => {
   cursor: pointer;
   font-family: 'Arial', 'serif';
   font-size: 16px;
+}
+
+/* Stil des FAQ-Buttons */
+.styled-button2 {
+  background-color: none;
+  color: #fff;
+  padding: 30px 15px;
+  border: none; 
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Arial', 'serif';
+  font-size: 14px;
+  font-style: italic;
+  text-decoration: underline;
 }
 
 /* Stil der Catchphrase */

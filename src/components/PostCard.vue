@@ -12,7 +12,7 @@
     <!--Darstellung des Titels, einer Trennlinie und des Memebildes-->
     <VCardTitle class="title">{{ title }}</VCardTitle>
     <VDivider />
-    <VImg
+    <img
         v-if="imgSrc"
         :src="imgSrc"
         :alt="title"

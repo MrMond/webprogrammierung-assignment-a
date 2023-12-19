@@ -95,7 +95,7 @@ const sortedGalleryData = computed(() => {
 
 /*Methode zum Laden der karten aus der firebase. Die fünf dummys dienen als Standard, falls leer*/
 async function loadGalleryData() {
-  try {
+  /*try {
     const data = await getPostCards();
     if (data && data.length > 0) {
       galleryData.value = reactive([...data]);
@@ -114,28 +114,13 @@ async function loadGalleryData() {
       likes: 0, title: "Grumpy Cat",
       imgSrc: "https://firebasestorage.googleapis.com/v0/b/webprogrammierung-asignment-a.appspot.com/o/images%2F1f66f300-ee55-4a9f-801d-abcfcd817551?alt=media&token=54a1e896-7c7f-4181-960a-c5bf99ac04c8"
     }]);
-  }
+  }*/
+  galleryData.value = reactive([{
+        id: yR7sLam2qKm0VBC1tg3p,
+        likes: 0, title: "Grumpy Cat",
+        imgSrc: "https://firebasestorage.googleapis.com/v0/b/webprogrammierung-asignment-a.appspot.com/o/images%2F1f66f300-ee55-4a9f-801d-abcfcd817551?alt=media&token=54a1e896-7c7f-4181-960a-c5bf99ac04c8"
+      }])
 }
-
-
-
-/*Methode zum hinzufügen eines Memes in der Gallery*/ //redundant??
-const openPostcardDetails = (event) => {
-  // Öffnen das Dialogfensters für die Eingabe
-  const { title, imgSrc } = event.detail;
-  if (title && imgSrc) {
-    selectedPostCard.value = { title, imgSrc, likes: 0 };
-    showModalDialog.value = true;
-    // Fügt das neue Meme zum galleryData Array hinzu
-    galleryData.value.push({ title, imgSrc, likes: 0 });
-    // Update local storage
-    localStorage.setItem('gallery_data', JSON.stringify(galleryData.value));
-  }
-};
-
-/* Eventlistener zum Auslösen der openpostcarddetails methode*/
-window.addEventListener('openPostcardDetails', openPostcardDetails);
-
 
 const showDeleteDialog = ref(false);
 

@@ -1,10 +1,36 @@
 <template>
-  <div class="faq-page">
-    <v-row>
-      <v-col cols="12">
-        <h2 class="faq-heading">Common Curiosities</h2>
-      </v-col>
-    </v-row>
+  <div class="container-big">
+    <div>
+      <h2 class="faq-heading">Common Curiosities</h2>
+    </div>
+
+    <v-expansion-panels>
+      <v-expansion-panel
+        title="Title"
+        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
+      </v-expansion-panel>
+    </v-expansion-panels>
+
+    <v-expansion-panels>
+      <v-expansion-panel
+        title="Title"
+        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
+      </v-expansion-panel>
+    </v-expansion-panels>
+
+    <v-expansion-panels>
+      <v-expansion-panel
+        title="Title"
+        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
+      </v-expansion-panel>
+    </v-expansion-panels>
+
+    <v-expansion-panels>
+      <v-expansion-panel
+        title="Title"
+        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
+      </v-expansion-panel>
+    </v-expansion-panels>
 
     <v-expansion-panels>
       <v-expansion-panel
@@ -84,7 +110,8 @@ const closeNewQuestionDialog = () => {
 
 .faq-heading {
   text-align: center;
-  margin-bottom: 35px;
+  margin-bottom: 60px;
+  margin-top: 20px;
   font-family: Times New Roman;
   font-size: xx-large;
   color: #333;
@@ -113,5 +140,18 @@ const closeNewQuestionDialog = () => {
 
 .button {
   font-family: 'Arial', 'serif';
+}
+
+.container-big {
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Links ausrichten */
+  align-items: center; 
+  height: 100vh; /* 100% der Bildschirmhöhe */
+  width: 100%;    /* 50% der Bildschirmbreite */
+  max-width: 100vw; /* Maximale Breite auf 50% der Bildschirmbreite begrenzen */
+  padding-left: 5vw;
+  padding-right: 5vw;
 }
 </style>

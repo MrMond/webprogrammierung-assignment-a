@@ -58,30 +58,9 @@ export default {
 </script>
 
 <template>
-  <v-container class="image-uploader" @dragover.prevent @drop="handleDrop">
+  <div class="image-uploader" @dragover.prevent @drop="handleDrop">
 
-    <v-btn v-if="!image" @click="openDialog">Drag and Drop Image or click to select a cat from our selection</v-btn>
-
-    <v-dialog v-model="selectionDialog" max-width="400">
-      <v-card>
-        <v-card-title>Select a cat</v-card-title>
-        <v-card-text>
-          <v-list>
-            <v-list-item v-for="(option, index) in options" :key="index">
-              <v-list-item-content @click="selectOption(option)">
-                <v-img :src="option" height="200%" width="100px"></v-img>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="closeDialog">Close</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-btn v-if="image" @click="openDialog">Drag and Drop a replacement Image or click to select a cat from our
-      selection</v-btn>
+    <btn v-if="!image" @click="openDialog" >Drag and Drop Image or click to select a cat from our selection</btn>
 
     <v-dialog v-model="selectionDialog" max-width="400">
       <v-card>
@@ -101,7 +80,28 @@ export default {
       </v-card>
     </v-dialog>
 
-  </v-container>
+    <btn v-if="image" @click="openDialog">Drag and Drop a replacement Image or click to select a cat from our
+      selection</btn>
+
+    <v-dialog v-model="selectionDialog" max-width="400">
+      <v-card>
+        <v-card-title>Select a cat</v-card-title>
+        <v-card-text>
+          <v-list>
+            <v-list-item v-for="(option, index) in options" :key="index">
+              <v-list-item-content @click="selectOption(option)">
+                <v-img :src="option" height="200%" width="100px"></v-img>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="closeDialog">Close</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+  </div>
 </template>
 
 <style scoped>
@@ -111,6 +111,7 @@ export default {
   text-align: center;
   background-color: rgba(255, 255, 255, 0.15);
   max-width: 80vw;
+  margin-bottom: 20px;
 }
 
 .image-uploader button {

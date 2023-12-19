@@ -54,7 +54,8 @@ export default {
           console.log(`Number of saved Elements: ${allElements.value.length}`);
           const canvas = document.getElementById("canvas");
           const combinedImage = new Image();
-          combinedImage.src = canvas.toDataURL(); //combine all movable elements to a single image
+          combinedImage.src = canvas.toDataURL("image/jpeg",0.8); //combine all movable elements to a single image
+          console.log(combinedImage.src)
           combinedImage.onload = () => {
             try {
               setDBImage(combinedImage.src).then(() => { //update session storage
@@ -63,7 +64,6 @@ export default {
                 const title = prompt("Enter the title for the new postcard:");
                 if (title) {
                   uploadPostCard(title, combinedImage.src, 0).then(() => { //save to firebase
-                    window.dispatchEvent(new Event('saveImage'));
                   });
                 }
                 window.dispatchEvent(new CustomEvent('updateDisplay', { detail: { imgSrc: combinedImage.src } })); //call updateImage with new image

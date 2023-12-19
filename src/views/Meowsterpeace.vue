@@ -53,6 +53,7 @@
 import PostCard from "@/components/PostCard.vue";
 import { ref, computed, onBeforeUnmount, onMounted, reactive } from "vue";
 import { getPostCards, deletePostCard, updatePostCard } from "../components/db"
+import { connectStorageEmulator } from "firebase/storage";
 
 const showModalDialog = ref(false);
 const showAddPostcardDialog = ref(false);
@@ -84,10 +85,6 @@ const updateLikes = (card, newLikes) => {
 };
 
 
-
-
-
-
 /*methode zum sortieren der Memes absteigend nach Likezahl, Update der reihenfolge bei jeder Änderung der galleryData arrays*/
 const sortedGalleryData = computed(() => {
   return [...galleryData.value].sort((a, b) => b.likes - a.likes);
@@ -95,14 +92,14 @@ const sortedGalleryData = computed(() => {
 
 /*Methode zum Laden der karten aus der firebase. Die fünf dummys dienen als Standard, falls leer*/
 async function loadGalleryData() {
-  /*try {
+  try {
     const data = await getPostCards();
     if (data && data.length > 0) {
       galleryData.value = reactive([...data]);
     } else {
       console.log("reverted to using default option");
       galleryData.value = reactive([{
-        id: yR7sLam2qKm0VBC1tg3p,
+        id: "yR7sLam2qKm0VBC1tg3p",
         likes: 0, title: "Grumpy Cat",
         imgSrc: "https://firebasestorage.googleapis.com/v0/b/webprogrammierung-asignment-a.appspot.com/o/images%2F1f66f300-ee55-4a9f-801d-abcfcd817551?alt=media&token=54a1e896-7c7f-4181-960a-c5bf99ac04c8"
       }]);
@@ -110,56 +107,53 @@ async function loadGalleryData() {
   } catch (error) {
     console.warn("Loading gallery failed: ", error);
     galleryData.value = reactive([{
-      id: yR7sLam2qKm0VBC1tg3p,
+      id: "yR7sLam2qKm0VBC1tg3p",
       likes: 0, title: "Grumpy Cat",
       imgSrc: "https://firebasestorage.googleapis.com/v0/b/webprogrammierung-asignment-a.appspot.com/o/images%2F1f66f300-ee55-4a9f-801d-abcfcd817551?alt=media&token=54a1e896-7c7f-4181-960a-c5bf99ac04c8"
     }]);
-  }*/
-  galleryData.value = reactive([{
-        id: yR7sLam2qKm0VBC1tg3p,
-        likes: 0, title: "Grumpy Cat",
-        imgSrc: "https://firebasestorage.googleapis.com/v0/b/webprogrammierung-asignment-a.appspot.com/o/images%2F1f66f300-ee55-4a9f-801d-abcfcd817551?alt=media&token=54a1e896-7c7f-4181-960a-c5bf99ac04c8"
-      }])
-}
+  }
+
+  }
 
 const showDeleteDialog = ref(false);
 
-const confirmDelete = () => {
-  showDeleteDialog.value = true;
-};
+  const confirmDelete = () => {
+    showDeleteDialog.value = true;
+  };
 
-const cancelDelete = () => {
-  showDeleteDialog.value = false;
-};
+  const cancelDelete = () => {
+    showDeleteDialog.value = false;
+  };
 
-const removePostcard = () => {
-  showDeleteDialog.value = false;
-  if (selectedPostCard.value) {
-    const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
-    if (index !== -1) {
-      const id = selectedPostCard.value.id;
-      // Entfernen aus galleryData
-      galleryData.value.splice(index, 1);
-      // Update firebase
-      deletePostCard(id);
-      showModalDialog.value = false;
+  const removePostcard = () => {
+    showDeleteDialog.value = false;
+    if (selectedPostCard.value) {
+      const index = galleryData.value.findIndex(item => item.title === selectedPostCard.value.title);
+      if (index !== -1) {
+        const id = selectedPostCard.value.id;
+        // Entfernen aus galleryData
+        galleryData.value.splice(index, 1);
+        // Update firebase
+        deletePostCard(id);
+        showModalDialog.value = false;
+      }
     }
-  }
-};
+  };
 
-onMounted(async () => {
-  await loadGalleryData();
-  console.log(`downloaded ${galleryData.value.length} cards`);
-});
-
-onBeforeUnmount(() => { //in der firebase alle karten updaten
-  galleryData.value.forEach(element => {
-    if (!!element.id) {
-      updatePostCard(element.title, element.imgSrc, element.likes, element.id);
-      console.log(`updated Likes to ${element.likes} for ${element.title}`);
-    }
+  onMounted(async () => {
+    await loadGalleryData();
+    console.log(`downloaded ${galleryData.value.length} cards`);
+    console.log(galleryData.value)
   });
-});
+
+  onBeforeUnmount(() => { //in der firebase alle karten updaten
+    galleryData.value.forEach(element => {
+      if (!!element.id) {
+        updatePostCard(element.title, element.imgSrc, element.likes, element.id);
+        console.log(`updated Likes to ${element.likes} for ${element.title}`);
+      }
+    });
+  });
 </script>
 
 
@@ -182,4 +176,5 @@ h1 {
 
 .cardInteractable {
   font-family: 'Arial', 'serif';
-}</style>
+}
+</style>

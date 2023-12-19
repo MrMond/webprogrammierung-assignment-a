@@ -372,11 +372,24 @@ export default {
 </template>
 
 <style scoped>
-.image-manipulation canvas {
-  max-width: 45vw;
-  max-height: 65vh;
-  background-color: rgba(255, 255, 255, 0.25);
+.image-manipulation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 70vw; /* Maximale Breite des Containers auf 70% der Bildschirmbreite begrenzen */
+  max-height: 70vh; /* Maximale Höhe des Containers auf 70% der Bildschirmhöhe begrenzen */
+  
 }
+
+.image-manipulation canvas {
+  object-fit: contain; /* Oder "cover", je nachdem, welches Verhalten Sie bevorzugen */
+  max-width: 1050px; /* Maximale Breite des Bildes auf 1050 Pixel begrenzen */
+  max-height: 100%; /* Maximale Höhe des Bildes auf 100% des Containers festlegen */
+  width: 100%; /* Breite auf 100% des Containers festlegen */
+  height: 100%; /* Höhe auf 100% des Containers festlegen */
+}
+
+
 
 .button-container {
   display: flex;

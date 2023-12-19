@@ -66,6 +66,7 @@
 <script setup>
 import { ref } from 'vue';
 
+
 const faqs = ref([
   { question: 'What type of cats can I upload?', answer: 'You can upload any feline. All cats are welcome in our memefactory!' },
   { question: 'Which data types can I upload?', answer: 'Your Meowsterpeace starts with a jpg, png or aviv file.' },
@@ -96,6 +97,8 @@ const openNewQuestionDialog = () => {
 const closeNewQuestionDialog = () => {
   dialog.value = false;
 };
+
+
 </script>
 
 <style scoped>
@@ -140,6 +143,7 @@ const closeNewQuestionDialog = () => {
 
 .button {
   font-family: 'Arial', 'serif';
+  margin-bottom: 20px;
 }
 
 .container-big {
@@ -148,7 +152,7 @@ const closeNewQuestionDialog = () => {
   flex-direction: column;
   justify-content: flex-start; /* Links ausrichten */
   align-items: center; 
-  height: 100vh; /* 100% der Bildschirmhöhe */
+  height: 100%; /* 100% der Bildschirmhöhe */
   width: 100%;    /* 50% der Bildschirmbreite */
   max-width: 100vw; /* Maximale Breite auf 50% der Bildschirmbreite begrenzen */
   padding-left: 5vw;

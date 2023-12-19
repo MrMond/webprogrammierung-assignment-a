@@ -4,20 +4,37 @@ import ImageManipulation from "@/components/ImageManipulation.vue";
 </script>
 
 <template>
-  <v-container class="generator">
-    <h1 class="header-title" style="font-family: 'Times New Roman'; color: black;">Meow Generator</h1>
+  <div class="container-generator">
+    <h1 class="header-title">Meow Generator</h1>
     <ImageManipulation />
-    <ImageUploader/>
-  </v-container>
+    <ImageUploader />
+    
+  </div>
 </template>
 
 <style scoped>
-.generator {
-  vertical-align: top !important;
+.container-generator {
   background-color: #f0f0f0;
-  padding-bottom: 250px;
-  padding-top: 250px;
-  padding-right: 200px;
-  padding-left: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  padding-left: 2vw;
+  padding-right: 2vw;
+}
+
+.header-title {
+  font-family: 'Times New Roman';
+  color: black;
+  margin-top: 20px;
+}
+
+.füller {
+  flex: 1;
+  background-color: black;
+  height: 1px;
 }
 </style>

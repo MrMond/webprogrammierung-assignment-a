@@ -21,7 +21,7 @@ export default {
 
     const updateImage = () => {
       getDBImage().then((imageData) => { //read data from session storage
-        image.value = imageData;
+        image.value = imageData; //imageData
         imageAvailable.value = !!image.value;
         redrawCanvas(); //update shown image
         console.log("updated image");
@@ -380,8 +380,8 @@ export default {
 
 .button-container {
   display: flex;
-  justify-content: flex-end;
-  margin-bottom: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .button-container button {

@@ -1,10 +1,25 @@
 <template>
-  <v-container>
-    <h1>Meowsterpeace Gallery</h1>
-
+  <div class="container-generator">
+    <div class="headline-container">
+      <h1  >Meowsterpeace Gallery</h1>
+    </div>
     <!-- Abänderung des Templates, dass jedes Meme in einem Container dargestellt wird, der auf Klick reagiert und die "showModal" Methode ausführt-->
     <v-row>
-      <v-col v-for="(card, index) in sortedGalleryData" :key="index" cols="auto">
+      <v-col v-if="isMini === 'md' " v-for="(card, index) in sortedGalleryData" :key="index" cols="4">
+        <div class="gallery-card-container" @click="showModal(card)">
+          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
+            @update-likes="updateLikes(card, $event)" />
+        </div>
+      </v-col>
+
+      <v-col v-if="isMini === 'sm' " v-for="(card, index) in sortedGalleryData" :key="index" cols="6">
+        <div class="gallery-card-container" @click="showModal(card)">
+          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
+            @update-likes="updateLikes(card, $event)" />
+        </div>
+      </v-col>
+
+      <v-col v-if="isMini === 'xs' " v-for="(card, index) in sortedGalleryData" :key="index" cols="12">
         <div class="gallery-card-container" @click="showModal(card)">
           <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
             @update-likes="updateLikes(card, $event)" />
@@ -43,7 +58,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-container>
+  </div>
 </template>
 
 
@@ -154,6 +169,22 @@ const showDeleteDialog = ref(false);
       }
     });
   });
+
+
+import { useDisplay } from 'vuetify'
+  
+const { name } = useDisplay()
+
+const isMini = computed(() => {
+  switch (name.value) {
+    case 'xs': return "xs"
+    case 'sm': return "sm"
+    case 'md': return "md"
+    case 'lg': return "md"
+    case 'xl': return "md"
+    case 'xxl': return "md"
+  }
+})
 </script>
 
 
@@ -168,13 +199,42 @@ h1 {
 
 .gallery-card-container {
   cursor: pointer;
-  width: 250px;
-  height: 200px;
+  object-fit: contain; /* Oder "cover", je nachdem, welches Verhalten Sie bevorzugen */
+  max-width: 1050px; /* Maximale Breite des Bildes auf 1050 Pixel begrenzen */
+  max-height: 100%; /* Maximale Höhe des Bildes auf 100% des Containers festlegen */
+  width: 100%; /* Breite auf 100% des Containers festlegen */
+  height: 100%; /* Höhe auf 100% des Containers festlegen */
   overflow: hidden;
   margin: 8px;
 }
 
 .cardInteractable {
   font-family: 'Arial', 'serif';
+}
+.headline-container{
+ 
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  margin-bottom: 30px;
+  margin-top: 30px;
+
+}
+
+.container-generator {
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  max-width: 100vw;
+  padding-left: 2vw;
+  padding-right: 2vw;
 }
 </style>

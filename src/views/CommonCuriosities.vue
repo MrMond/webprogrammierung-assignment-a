@@ -4,38 +4,10 @@
       <h2 class="faq-heading">Common Curiosities</h2>
     </div>
 
-    <v-expansion-panels>
-      <v-expansion-panel
-        title="Title"
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <v-expansion-panels>
-      <v-expansion-panel
-        title="Title"
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <v-expansion-panels>
-      <v-expansion-panel
-        title="Title"
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <v-expansion-panels>
-      <v-expansion-panel
-        title="Title"
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-5">
-      </v-expansion-panel>
-    </v-expansion-panels>
-
-    <v-expansion-panels>
-      <v-expansion-panel
-        title="Title"
-        text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima" class="mb-10">
+    <v-expansion-panels v-for="(faq,index) in faqs" :key="index" cols="auto">
+      <v-expansion-panel :title="faq.question"
+        :text="faq.answer"
+        class="mb-5">
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -60,21 +32,13 @@
   </div>
 </template>
 
-
-
-
 <script setup>
-import { ref } from 'vue';
+import { reactive, ref, onMounted} from 'vue';
+import { getFAQTuples } from "../components/db"
 
 
 const faqs = ref([
-  { question: 'What type of cats can I upload?', answer: 'You can upload any feline. All cats are welcome in our memefactory!' },
-  { question: 'Which data types can I upload?', answer: 'Your Meowsterpeace starts with a jpg, png or aviv file.' },
-  { question: 'Any size limit for uploading images?', answer: 'No size limit per se, but remember, the bigger the file, the longer the loading time. We suggest keeping it under 5MB.' },
-  { question: 'How to create the purrfect meme?', answer: 'Simply add your wittiest caption to the picture and voilà! You‘ve created your personal cat meme.' },
-  { question: 'How do I change the font size of the text?', answer: 'You can change the size of the text with the page up and page down buttons on your keyboard.' },
-  { question: 'What if I don’t have a cat photo?', answer: 'Worry not! We provide a variety of default images for you to choose from.' },
-
+  { question: '', answer: '' },
 ]);
 
 const openPanels = ref([]);
@@ -98,7 +62,19 @@ const closeNewQuestionDialog = () => {
   dialog.value = false;
 };
 
+async function loadFAQ() {
+  try {
+    const data = await getFAQTuples();
+    if (data && data.length > 0) {
+      faqs.value = reactive([...data]);
+    }
+  } catch {}
+  console.log(faqs)
+}
 
+onMounted(async () => {
+  await loadFAQ();
+});
 </script>
 
 <style scoped>
@@ -108,7 +84,7 @@ const closeNewQuestionDialog = () => {
   padding-top: 250px;
   padding-right: 200px;
   padding-left: 200px;
- 
+
 }
 
 .faq-heading {
@@ -150,12 +126,15 @@ const closeNewQuestionDialog = () => {
   background-color: #f0f0f0;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Links ausrichten */
-  align-items: center; 
-  height: 100%; /* 100% der Bildschirmhöhe */
-  width: 100%;    /* 50% der Bildschirmbreite */
-  max-width: 100vw; /* Maximale Breite auf 50% der Bildschirmbreite begrenzen */
+  justify-content: flex-start;
+  /* Links ausrichten */
+  align-items: center;
+  height: 100%;
+  /* 100% der Bildschirmhöhe */
+  width: 100%;
+  /* 50% der Bildschirmbreite */
+  max-width: 100vw;
+  /* Maximale Breite auf 50% der Bildschirmbreite begrenzen */
   padding-left: 5vw;
   padding-right: 5vw;
-}
-</style>
+}</style>

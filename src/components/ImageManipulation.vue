@@ -19,7 +19,15 @@ export default {
     const scaleFactorX = ref(1);
     const scaleFactorY = ref(1);
 
-    const debug = true;
+    //visual debug marker
+    const checkDevTools =  () => {
+      if (window.console && (window.console.firebug || window.console.clear)) {
+        return true;
+      } else {
+        return  false;
+      }
+    };
+    const debug = ref(checkDevTools());
 
     const updateImage = () => {
       getDBImage().then((imageData) => { //read data from session storage
@@ -207,7 +215,7 @@ export default {
       canvas.onmousedown = function (event) { //click down --> select element
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
-        if(debug){
+        if(debug.value){
           const ctx = canvas.getContext("2d");
           ctx.fillRect(cursorX.value-15, cursorY.value-15, 30, 30);
         }
@@ -235,7 +243,7 @@ export default {
       canvas.onmouseup = function (event) { //let go --> reposition element
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
-        if(debug){
+        if(debug.value){
           const ctx = canvas.getContext("2d");
           ctx.fillRect(cursorX.value - 15, cursorY.value -15, 30, 30);
         }
@@ -295,6 +303,9 @@ export default {
     };
 
     const readKeyboardInput = (event) => { //handle keyboard interactions
+      //update debug mode, to activate with open console
+      debug.value = checkDevTools();
+
       if (selectedElement.value) {
         if (selectedElement.value.type == "text") {
           const keyPressed = event.key;

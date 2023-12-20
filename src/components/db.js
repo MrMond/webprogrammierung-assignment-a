@@ -53,7 +53,15 @@ export async function getPostCards(){
   const querySnapshot = await getDocs(collection(db, "Gallery"));
   const postCards = querySnapshot.docs.map((doc) => {
     const data = doc.data();
-    let imgSrc = data.imgSrc || "public/error-image.jpg";
+    let imgSrc
+    try{
+      imgSrc = data.imgSrc; // it is faulty here, as I need to download from the link firebase provides first.
+      imgSrc = imgSrc.split(',')[1];//remove preamble
+      imgSrc = atob(imgSrc);//convert to binary
+    } catch {
+      imgSrc = "public/error-image.jpg"
+    }
+    
     return {
       id: doc.id,
       likes: data.likes || 0,

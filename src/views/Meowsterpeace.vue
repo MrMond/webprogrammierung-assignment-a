@@ -199,14 +199,19 @@ h1 {
 
 .gallery-card-container {
   cursor: pointer;
-  object-fit: contain; /* Oder "cover", je nachdem, welches Verhalten Sie bevorzugen */
-  max-width: 1050px; /* Maximale Breite des Bildes auf 1050 Pixel begrenzen */
-  max-height: 100%; /* Maximale Höhe des Bildes auf 100% des Containers festlegen */
-  width: 100%; /* Breite auf 100% des Containers festlegen */
-  height: 100%; /* Höhe auf 100% des Containers festlegen */
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
   margin: 8px;
 }
+
+.gallery-card-container img,
+.gallery-card-container .title {
+  flex: 1; /* Füllt den verfügbaren Platz aus */
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Optional: Bildverhältnis beibehalten, wenn es den Container füllt */
+}y
 
 .cardInteractable {
   font-family: 'Arial', 'serif';

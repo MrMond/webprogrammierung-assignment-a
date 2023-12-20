@@ -19,6 +19,8 @@ export default {
     const scaleFactorX = ref(1);
     const scaleFactorY = ref(1);
 
+    const debug = true;
+
     const updateImage = () => {
       getDBImage().then((imageData) => { //read data from session storage
         image.value = imageData; //imageData
@@ -205,6 +207,10 @@ export default {
       canvas.onmousedown = function (event) { //click down --> select element
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
+        if(debug){
+          const ctx = canvas.getContext("2d");
+          ctx.fillRect(cursorX.value-15, cursorY.value-15, 30, 30);
+        }
         try {
           console.log(`click (${cursorX.value}/${cursorY.value}) text (${selectedElement.value.x}/${selectedElement.value.y}/w:${selectedElement.value.width}/h:${selectedElement.value.height})`);
         } catch { }
@@ -217,18 +223,22 @@ export default {
         });
       };
 
-      canvas.onmousemove = function (event) { //update position
+      /*canvas.onmousemove = function (event) { //update position
         if (isDraggable) {
           cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
           cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
           selectedElement.value.x = cursorX.value
           selectedElement.value.y = cursorY.value
         }
-      };
+      };*/
 
       canvas.onmouseup = function (event) { //let go --> reposition element
         cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
         cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
+        if(debug){
+          const ctx = canvas.getContext("2d");
+          ctx.fillRect(cursorX.value - 15, cursorY.value -15, 30, 30);
+        }
         console.log(`mouseup @ (${cursorX.value}/${cursorY.value})`)
         if (isDraggable) {
           switch (selectedElement.value.type) {
@@ -245,8 +255,8 @@ export default {
               selectedElement.value.y = cursorY.value;
               break;
           }
-          redrawCanvas();
         }
+        redrawCanvas();
         isDraggable = false;
       };
 
@@ -376,17 +386,24 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 70vw; /* Maximale Breite des Containers auf 70% der Bildschirmbreite begrenzen */
-  max-height: 70vh; /* Maximale Höhe des Containers auf 70% der Bildschirmhöhe begrenzen */
-  
+  max-width: 70vw;
+  /* Maximale Breite des Containers auf 70% der Bildschirmbreite begrenzen */
+  max-height: 70vh;
+  /* Maximale Höhe des Containers auf 70% der Bildschirmhöhe begrenzen */
+
 }
 
 .image-manipulation canvas {
-  object-fit: contain; /* Oder "cover", je nachdem, welches Verhalten Sie bevorzugen */
-  max-width: 1050px; /* Maximale Breite des Bildes auf 1050 Pixel begrenzen */
-  max-height: 100%; /* Maximale Höhe des Bildes auf 100% des Containers festlegen */
-  width: 100%; /* Breite auf 100% des Containers festlegen */
-  height: 100%; /* Höhe auf 100% des Containers festlegen */
+  object-fit: contain;
+  /* Oder "cover", je nachdem, welches Verhalten Sie bevorzugen */
+  max-width: 1050px;
+  /* Maximale Breite des Bildes auf 1050 Pixel begrenzen */
+  max-height: 100%;
+  /* Maximale Höhe des Bildes auf 100% des Containers festlegen */
+  /*width: 100%;
+   Breite auf 100% des Containers festlegen */
+  /*height: 100%;
+   Höhe auf 100% des Containers festlegen */
 }
 
 
@@ -401,5 +418,4 @@ export default {
   margin-left: 10px;
   background-color: rgba(255, 255, 255, 0.55);
   font-family: 'Arial', 'serif';
-}
-</style>
+}</style>

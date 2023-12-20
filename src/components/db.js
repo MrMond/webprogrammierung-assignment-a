@@ -1,7 +1,7 @@
 //https://console.firebase.google.com/u/0/project/webprogrammierung-asignment-a/
 import { initializeApp } from "firebase/app";
 import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from 'firebase/firestore';
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, getDownloadURL, uploadBytes } from "firebase/storage";
 import { v4 as uuidv4 } from 'uuid';
 
 const firebaseConfig = {
@@ -24,11 +24,20 @@ const storage = getStorage(app);
 export async function uploadPostCard(title_str,imageStr,like_cnt){ 
   //upload image to seperate storage
   const primaryKey = uuidv4();
-  const storageRef = ref(storage, 'images/' + primaryKey);
+  const storageRef = ref(storage, 'images/' + primaryKey + '.jpeg');
   var downloadURL = null
 
+  // create jpg file out of encoded imageStr
+  const byteChars = atob(imageStr.split(",")[1]);
+  const byteNmbrs = new Array(byteChars.length);
+  for(let i = 0; i<byteChars.length;i++){
+    byteNmbrs[i] = byteChars.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNmbrs);
+  const blob = new Blob([byteArray],{type: "image/jpeg"});
+
   try {
-    const snapshot = await uploadString(storageRef, imageStr);
+    const snapshot = await uploadBytes(storageRef, blob); //HERE
     console.log('File uploaded successfully:', snapshot);
 
     downloadURL = await getDownloadURL(storageRef); //acts as src for img components
@@ -53,15 +62,7 @@ export async function getPostCards(){
   const querySnapshot = await getDocs(collection(db, "Gallery"));
   const postCards = querySnapshot.docs.map((doc) => {
     const data = doc.data();
-    let imgSrc
-    try{
-      imgSrc = data.imgSrc; // it is faulty here, as I need to download from the link firebase provides first.
-      imgSrc = imgSrc.split(',')[1];//remove preamble
-      imgSrc = atob(imgSrc);//convert to binary
-    } catch {
-      imgSrc = "public/error-image.jpg"
-    }
-    
+    let imgSrc = data.imgSrc || "public/error-image.jpg";
     return {
       id: doc.id,
       likes: data.likes || 0,

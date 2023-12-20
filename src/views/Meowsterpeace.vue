@@ -148,7 +148,7 @@ const showDeleteDialog = ref(false);
 
   onBeforeUnmount(() => { //in der firebase alle karten updaten
     galleryData.value.forEach(element => {
-      if (!!element.id) {
+      if (!!element.id && element.imgSrc != "public/error-image.jpg") {
         updatePostCard(element.title, element.imgSrc, element.likes, element.id);
         console.log(`updated Likes to ${element.likes} for ${element.title}`);
       }

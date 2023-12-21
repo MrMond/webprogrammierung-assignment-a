@@ -184,25 +184,33 @@ export default {
     };
 
     //canvas methods
-    const redrawCanvas = () => { // also usable as reset
-      const canvas = document.getElementById("canvas");
-      const ctx = canvas.getContext("2d");
-      const img = new Image();
-      img.src = image.value;
-      img.onload = () => { //resize canvas
-        canvas.height = img.height;
-        canvas.width = img.width;
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); //draw user provided image
-        allElements.value.forEach(element => {
-          switch (element.type) {
-            case "sticker":
-              drawSticker(ctx, element); //draw all stickers
-              break;
-            case "text":
-              drawTextarea(ctx, element) //draw all text elements
-              break;
-          }
-        });
+    const redrawCanvas = () => {
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+  const img = new Image();
+  img.src = image.value;
+  img.onload = () => {
+    const aspectRatio = img.width / img.height;
+
+    // Neue Canvas-Größe unter Berücksichtigung des Bildverhältnisses
+    const canvasWidth = window.innerWidth * 0.7; // Anpassen, wie gewünscht
+    const canvasHeight = canvasWidth / aspectRatio;
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    allElements.value.forEach((element) => {
+      switch (element.type) {
+        case "sticker":
+          drawSticker(ctx, element);
+          break;
+        case "text":
+          drawTextarea(ctx, element);
+          break;
+      }
+    });
         scaleBoundingClientRect(); // update bounding rect of canvas, so that there isn't a disparity between the clicked position and a resized canvas
       }
       console.log("redrew canvas");
@@ -418,10 +426,10 @@ export default {
   /* Maximale Breite des Bildes auf 1050 Pixel begrenzen */
   max-height: 100%;
   /* Maximale Höhe des Bildes auf 100% des Containers festlegen */
-  /*width: 100%;
-   Breite auf 100% des Containers festlegen */
-  /*height: 100%;
-   Höhe auf 100% des Containers festlegen */
+  width: auto;
+  /*Breite auf 100% des Containers festlegen */
+  height: auto;
+  /*Höhe auf 100% des Containers festlegen */
 }
 
 

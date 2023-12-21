@@ -1,28 +1,65 @@
 <template>
-  <div class="container-generator">
+  <!-- Hauptcontainer für die Meowsterpeace Gallery Seite -->
+  <div class="container-gallery">
+    <!-- Container für die Überschrift der Seite -->
     <div class="headline-container">
       <h1  >Meowsterpeace Gallery</h1>
     </div>
-    <!-- Abänderung des Templates, dass jedes Meme in einem Container dargestellt wird, der auf Klick reagiert und die "showModal" Methode ausführt-->
+    <!-- Dynamische Anzeige der Meme-Karten basierend auf Vuetify Breakpoints -->
     <v-row>
-      <v-col v-if="isMini === 'md' " v-for="(card, index) in sortedGalleryData" :key="index" cols="4">
+      <!--Responsives Anzeigen der Karten für Breiten der Größe md als 4/12 der Gesamtbreite-->
+      <v-col
+        v-if="isMini === 'md'"
+        v-for="(card, index) in sortedGalleryData"
+        :key="index"
+        cols="4"
+        class="gallery-card-col"
+      >
+        <!-- Klickbarer Container für jedes Meme -->
         <div class="gallery-card-container" @click="showModal(card)">
-          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
-            @update-likes="updateLikes(card, $event)" />
+          <!-- Verwendung der PostCard-Komponente für die Anzeige der Karte -->
+          <PostCard
+            :title="card.title"
+            :imgSrc="card.imgSrc"
+            :likes="card.likes"
+            @update-likes="updateLikes(card, $event)"
+          />
         </div>
       </v-col>
 
-      <v-col v-if="isMini === 'sm' " v-for="(card, index) in sortedGalleryData" :key="index" cols="6">
+      <!-- Wiederholung des obigen Musters für die Bildschirmgrößen sm (6/12 breite Karten) und xs (vollständige breite Karten)  -->
+      <v-col
+        v-if="isMini === 'sm'"
+        v-for="(card, index) in sortedGalleryData"
+        :key="index"
+        cols="6"
+        class="gallery-card-col"
+      >
         <div class="gallery-card-container" @click="showModal(card)">
-          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
-            @update-likes="updateLikes(card, $event)" />
+          <PostCard
+            :title="card.title"
+            :imgSrc="card.imgSrc"
+            :likes="card.likes"
+            @update-likes="updateLikes(card, $event)"
+          />
         </div>
       </v-col>
 
-      <v-col v-if="isMini === 'xs' " v-for="(card, index) in sortedGalleryData" :key="index" cols="12">
+      
+      <v-col
+        v-if="isMini === 'xs'"
+        v-for="(card, index) in sortedGalleryData"
+        :key="index"
+        cols="12"
+        class="gallery-card-col"
+      >
         <div class="gallery-card-container" @click="showModal(card)">
-          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
-            @update-likes="updateLikes(card, $event)" />
+          <PostCard
+            :title="card.title"
+            :imgSrc="card.imgSrc"
+            :likes="card.likes"
+            @update-likes="updateLikes(card, $event)"
+          />
         </div>
       </v-col>
     </v-row>
@@ -105,7 +142,7 @@ const sortedGalleryData = computed(() => {
   return [...galleryData.value].sort((a, b) => b.likes - a.likes);
 });
 
-/*Methode zum Laden der karten aus der firebase. Die fünf dummys dienen als Standard, falls leer*/
+/*Methode zum Laden der karten aus der firebase*/
 async function loadGalleryData() {
   try {
     const data = await getPostCards();
@@ -130,16 +167,20 @@ async function loadGalleryData() {
 
   }
 
+/* Methode zum Anzeigen des Lösch-Bestätigungsdialogs */
 const showDeleteDialog = ref(false);
 
+  /* Methode zur Bestätigung des Löschens */
   const confirmDelete = () => {
     showDeleteDialog.value = true;
   };
 
+  /* Methode zum Abbrechen des Löschvorgangs */
   const cancelDelete = () => {
     showDeleteDialog.value = false;
   };
 
+  /* Methode zum Entfernen einer Postkarte */
   const removePostcard = () => {
     showDeleteDialog.value = false;
     if (selectedPostCard.value) {
@@ -155,6 +196,7 @@ const showDeleteDialog = ref(false);
     }
   };
 
+  /* Lifecycle-Hooks für das Mounten und Unmounten der Komponente */
   onMounted(async () => {
     await loadGalleryData();
     console.log(`downloaded ${galleryData.value.length} cards`);
@@ -173,6 +215,7 @@ const showDeleteDialog = ref(false);
 
 import { useDisplay } from 'vuetify'
   
+/* Verwendung von Vuetify useDisplay für das Reagieren auf Bildschirmgrößenänderungen */
 const { name } = useDisplay()
 
 const isMini = computed(() => {
@@ -189,14 +232,15 @@ const isMini = computed(() => {
 
 
 
-
-<!-- Manuelle Syle Anpassungen für diese Seite-->
 <style scoped>
+
+/*Style für die Überschrift */
 h1 {
   font-family: 'Times New Roman', Times, serif;
   color: white;
 }
 
+/*Style für Container, in denen die Memes dargestellt werden, die Container liegen in dem Grid system, was durch v-row und v-col entsteht */
 .gallery-card-container {
   cursor: pointer;
   display: flex;
@@ -205,17 +249,20 @@ h1 {
   margin: 8px;
 }
 
-.gallery-card-container img,
+/*Style für Titel der Memes */
 .gallery-card-container .title {
-  flex: 1; /* Füllt den verfügbaren Platz aus */
+  flex: 1; 
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Optional: Bildverhältnis beibehalten, wenn es den Container füllt */
-}y
+  object-fit: cover;
+}
 
+/*Style der Buttons */
 .cardInteractable {
   font-family: 'Arial', 'serif';
 }
+
+/*Style für Container, in dem die Überschrift der seite liegt */
 .headline-container{
  
   display: flex;
@@ -230,7 +277,8 @@ h1 {
 
 }
 
-.container-generator {
+/*main Container der Seite */
+.container-gallery {
   
   display: flex;
   flex-direction: column;

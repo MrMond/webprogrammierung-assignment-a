@@ -1,17 +1,34 @@
-
 <template>
-  <!--Erstellung von VCard als Layout der Memes. Darstellung ist abhängig von "largeView"-->
-  <VCard class="mx-auto" :max-width="largeView ? 600 : 280" :height="largeView ? 'auto' : 200"
-    :style="{ cursor: largeView ? 'auto' : 'pointer' }">
-
-    <!--Darstellung des Titels, einer Trennlinie und des Memebildes-->
+  <!-- Vue Material Design VCard-Komponente für die Galerie -->
+  <VCard
+    class="mx-auto gallery-card-container"
+    :max-width="largeView ? 600 : 280"
+    :height="largeView ? 'auto' : 280"
+    :style="{ cursor: largeView ? 'auto' : 'pointer' }"
+  >
+    <!-- Titel der Karte -->
     <VCardTitle class="title">{{ title }}</VCardTitle>
     <VDivider />
-    <VImg ref="memeImage" v-if="imgSrc" :src="imgSrc" :alt="title" :height="largeView ? '100%' : 'auto'"
-      :width="largeView ? '100%' : 'auto'" />
-    <div v-else class="loading-spinner" />
 
-    <!--wenn largeView wahr ist, wird hier der LikeButton dargestellt -->
+    <!-- Bildanzeige (falls vorhanden) mit begrenzung, damit auch hochkante Bilder in die Container passen -->
+    <VImg
+      v-if="imgSrc"
+      :src="imgSrc"
+      :alt="title"
+      :height="largeView ? '100%' : 'auto'"
+      :width="largeView ? '100%' : 'auto'"
+      style="object-fit: contain; object-position: center; max-width: 100%; max-height: 74%;"
+    />
+    <!-- Lade-Spinner, falls kein Bild vorhanden ist (falls das Laden der bilder länger dauert)-->
+    <div v-else class="loading-spinner" />
+    <VDivider />
+
+    <!-- Anzeige der Likes in der kleinen ansicht der Memes -->
+    <div v-if="!largeView" >
+      <span class="cardInteractable">{{ likes }} Likes</span>
+    </div>
+
+    <!-- Like-Button, wenn im Großbildmodus -->
     <v-row v-if="largeView">
       <v-col>
         <span class="cardInteractable">{{ likes }} Likes</span>
@@ -23,21 +40,18 @@
   </VCard>
 </template>
 
-
-<!-- Festlegen der Props der Memes: Titel, Bildquelle, Anzahl Likes, Anzeigemodus klein oder detailliert. Default setzen des Likes Buttons auf "nicht geliked"-->
 <script>
 //import { onMounted } from 'vue';
 import { getDBLikes, addDBLikes } from '../components/localDB';
 export default {
   props: ['title', 'imgSrc', 'likes', 'largeView'],
   data() {
+    // Daten für den Like-Zustand des Herz-Symbols
     return {
       liked: false,
-      id: null,
     };
   },
 
-  /* Aufruf der Methode, wenn der Likebutton gedrückt wird: Erhöhung der Likes des geöffneten Memes um 1, Umstellung des Likebuttons*/
   methods: {
     async updateLikes() {
       let addLike = !(await this.isLiked()); //check if user has liked the post before
@@ -77,14 +91,17 @@ export default {
 </script>
 
 <style scoped>
+
+/*Style für den Titel der Memes */
 .title {
   font-family: 'Arial', 'serif';
 }
-
+/* Style für Interactables */
 .cardInteractable {
   font-family: 'Arial', 'serif';
 }
 
+/* Stil für den Lade-Spinner */
 .loading-spinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-radius: 50%;
@@ -95,6 +112,7 @@ export default {
   margin: 20px auto;
 }
 
+/* Animationsdefinition für den Lade-Spinner */
 @keyframes spin {
   0% {
     transform: rotate(0deg);

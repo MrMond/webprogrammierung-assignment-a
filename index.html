@@ -1,62 +1,81 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
+    <!-- Definiert die Zeichenkodierung der HTML-Seite -->
     <meta charset="UTF-8">
+    
+    <!-- Favicon für die Website -->
     <link rel="icon" href="/src/assets/Logos/cat_meme_gen_logo_klein.png">
+    
+    <!-- Einstellungen für die Darstellung auf verschiedenen Geräten -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Titel der Webseite -->
     <title>CatMemeGenerator</title>
 
-    <!-- Schriftarten einbinden-->
+    <!-- Einbindung der Schriftart Lobster-Regular.ttf -->
     <link rel="stylesheet" href="src/assets/fonts/Lobster-Regular.ttf">
 
-
+    <!-- Styling für die Webseite -->
     <style>
-        .transparent {
-            opacity: 0.6;
-        }
+        
+        /* Basisstil für den gesamten body */
         body {
             margin: 0;
             overflow: hidden;
         }
+
+        /* Container für den Hintergrund */
         .background-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2;
+            z-index: 2; /*definiert die Schicht auf der die Klasse liegt*/
         }
         
-
+        /* Schwarze nicht transparente Overlay-Schicht über dem gesamten Bildschirm */
         .black-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #000; /* Schwarze nicht transparente Schicht */
-            z-index: 1;
+            background-color: #000; 
+            z-index: 1; /*definiert die Schicht auf der die Klasse liegt*/
         }
+
+        /* Rote transparente Overlay-Schicht über dem gesamten Bildschirm mit 50% Transparenz */
         .red-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(100, 13, 20, 0.5); /* Rote transparente Schicht */
-            z-index: 3;
+            background-color: rgba(100, 13, 20, 0.5); 
+            z-index: 3; /*definiert die Schicht auf der die Klasse liegt*/
         }
+
+        /* Layout für den Inhalt mit einer festen Breite, zentriert auf der Seite */
         .v-layout {
             width: 75rem;
             margin: 0 auto;
-            z-index: 4; /* Neues z-index für den Inhalt Ihrer Webanwendung */
+            z-index: 4; /*definiert die Schicht auf der die Klasse liegt*/
         }
     </style>
 </head>
 <body>
-<div class="black-overlay"></div>
-<div class="red-overlay"></div>
-<div class="v-layout" id="app"></div>
-<script type="module" src="/src/main.js"></script>
+    <!-- hier werden die Hintergrund Schichten definiert, das Hintergrundbild fehlt, da es in App.vue festgelegt wird -->
+    <div class="black-overlay"></div>
+    
+    
+    <div class="red-overlay"></div>
+    
+    
+    <div class="v-layout" id="app"></div>
+
+    
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>

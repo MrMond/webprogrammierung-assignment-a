@@ -5,24 +5,54 @@
     </div>
     <!-- Abänderung des Templates, dass jedes Meme in einem Container dargestellt wird, der auf Klick reagiert und die "showModal" Methode ausführt-->
     <v-row>
-      <v-col v-if="isMini === 'md' " v-for="(card, index) in sortedGalleryData" :key="index" cols="4">
+      <v-col
+        v-if="isMini === 'md'"
+        v-for="(card, index) in sortedGalleryData"
+        :key="index"
+        cols="4"
+        class="gallery-card-col"
+      >
         <div class="gallery-card-container" @click="showModal(card)">
-          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
-            @update-likes="updateLikes(card, $event)" />
+          <PostCard
+            :title="card.title"
+            :imgSrc="card.imgSrc"
+            :likes="card.likes"
+            @update-likes="updateLikes(card, $event)"
+          />
         </div>
       </v-col>
 
-      <v-col v-if="isMini === 'sm' " v-for="(card, index) in sortedGalleryData" :key="index" cols="6">
+      <v-col
+        v-if="isMini === 'sm'"
+        v-for="(card, index) in sortedGalleryData"
+        :key="index"
+        cols="6"
+        class="gallery-card-col"
+      >
         <div class="gallery-card-container" @click="showModal(card)">
-          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
-            @update-likes="updateLikes(card, $event)" />
+          <PostCard
+            :title="card.title"
+            :imgSrc="card.imgSrc"
+            :likes="card.likes"
+            @update-likes="updateLikes(card, $event)"
+          />
         </div>
       </v-col>
 
-      <v-col v-if="isMini === 'xs' " v-for="(card, index) in sortedGalleryData" :key="index" cols="12">
+      <v-col
+        v-if="isMini === 'xs'"
+        v-for="(card, index) in sortedGalleryData"
+        :key="index"
+        cols="12"
+        class="gallery-card-col"
+      >
         <div class="gallery-card-container" @click="showModal(card)">
-          <PostCard :title="card.title" :imgSrc="card.imgSrc" :likes="card.likes"
-            @update-likes="updateLikes(card, $event)" />
+          <PostCard
+            :title="card.title"
+            :imgSrc="card.imgSrc"
+            :likes="card.likes"
+            @update-likes="updateLikes(card, $event)"
+          />
         </div>
       </v-col>
     </v-row>
@@ -211,7 +241,7 @@ h1 {
   width: 100%;
   height: 100%;
   object-fit: cover; /* Optional: Bildverhältnis beibehalten, wenn es den Container füllt */
-}y
+}
 
 .cardInteractable {
   font-family: 'Arial', 'serif';

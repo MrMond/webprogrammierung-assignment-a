@@ -422,7 +422,7 @@ export default {
 .image-manipulation canvas {
   object-fit: contain;
   /* Oder "cover", je nachdem, welches Verhalten Sie bevorzugen */
-  max-width: 1050px;
+  max-width: 944px;
   /* Maximale Breite des Bildes auf 1050 Pixel begrenzen */
   max-height: 100%;
   /* Maximale Höhe des Bildes auf 100% des Containers festlegen */

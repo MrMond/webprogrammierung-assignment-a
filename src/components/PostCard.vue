@@ -1,27 +1,31 @@
-
 <template>
-
-  <!--Erstellung von VCard als Layout der Memes. Darstellung ist abhängig von "largeView"-->
   <VCard
-      class="mx-auto"
-      :max-width="largeView ? 600 : 280"
-      :height="largeView ? 'auto' : 200"
-      :style="{ cursor: largeView ? 'auto' : 'pointer' }"
+    class="mx-auto gallery-card-container"
+    :max-width="largeView ? 600 : 280"
+    :height="largeView ? 'auto' : 280"
+    :style="{ cursor: largeView ? 'auto' : 'pointer' }"
   >
-
-    <!--Darstellung des Titels, einer Trennlinie und des Memebildes-->
     <VCardTitle class="title">{{ title }}</VCardTitle>
     <VDivider />
-    <VImg
-        v-if="imgSrc"
-        :src="imgSrc"
-        :alt="title"
-        :height="largeView ? '100%' : 'auto'"
-        :width="largeView ? '100%' : 'auto'"
-    />
-    <div v-else class="loading-spinner"/>
 
-    <!--wenn largeView wahr ist, wird hier der LikeButton dargestellt -->
+    
+    <VImg
+      v-if="imgSrc"
+      :src="imgSrc"
+      :alt="title"
+      :height="largeView ? '100%' : 'auto'"
+      :width="largeView ? '100%' : 'auto'"
+      style="object-fit: contain; object-position: center; max-width: 100%; max-height: 74%;"
+    />
+    <div v-else class="loading-spinner" />
+    <VDivider />
+
+    <!-- Anzeige der Likes -->
+    <div v-if="!largeView" >
+      <span class="cardInteractable">{{ likes }} Likes</span>
+    </div>
+
+    <!-- Like-Button, wenn largeView true ist -->
     <v-row v-if="largeView">
       <v-col>
         <span class="cardInteractable">{{ likes }} Likes</span>
@@ -33,8 +37,6 @@
   </VCard>
 </template>
 
-
-<!-- Festlegen der Props der Memes: Titel, Bildquelle, Anzahl Likes, Anzeigemodus klein oder detailliert. Default setzen des Likes Buttons auf "nicht geliked"-->
 <script>
 export default {
   props: ['title', 'imgSrc', 'likes', 'largeView'],
@@ -44,20 +46,13 @@ export default {
     };
   },
 
-  /* Aufruf der Methode, wenn der Likebutton gedrückt wird: Erhöhung der Likes des geöffneten Memes um 1, Umstellung des Likebuttons*/
   methods: {
     incrementLikes() {
-      // Erhöhe die Likes um 1
-      if(!this.liked){
-        this.$emit('update-likes', this.likes + 1);
-      }
-
-      // Setze den Zustand des Herz-Buttons
+      this.$emit('update-likes', this.likes + 1);
       this.liked = true;
     },
   },
 };
-
 </script>
 
 <style scoped>
@@ -78,6 +73,8 @@ export default {
   animation: spin 1s linear infinite;
   margin: 20px auto;
 }
+
+
 
 @keyframes spin {
   0% { transform: rotate(0deg); }

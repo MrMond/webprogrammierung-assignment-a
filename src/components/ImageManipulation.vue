@@ -192,7 +192,7 @@ export default {
       img.onload = () => {
         const aspectRatio = img.width / img.height;
 
-        // Neue Canvas-Größe unter Berücksichtigung des Bildverhältnisses
+        // Neue Canvas-Größe unter Berücksichtigung des Bildverhältnisses => responsive design
         const canvasWidth = window.innerWidth * 0.7; // Anpassen, wie gewünscht
         const canvasHeight = canvasWidth / aspectRatio;
 
@@ -216,7 +216,7 @@ export default {
       console.log("redrew canvas");
     };
 
-    const scaleBoundingClientRect = () => {
+    const scaleBoundingClientRect = () => { // rescale bounding box of canvas, to get accurate mouse position and scale factors
       rect.value = document.getElementById("canvas").getBoundingClientRect();
       scaleFactorX.value = document.getElementById("canvas").width / rect.value.width;
       scaleFactorY.value = document.getElementById("canvas").height / rect.value.height;
@@ -289,7 +289,7 @@ export default {
     const isPointInsideElement = (pointX, pointY, element) => { // position check
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
-      switch (element.type) {
+      switch (element.type) { // support for future expansion, without major rewrites
         case "sticker":
           ctx.fillRect(element.x, element.y, 10, 10);
           ctx.fillRect(element.x, element.y + element.scale * element.image.height, 10, 10);
@@ -350,12 +350,12 @@ export default {
       }
     };
 
-    //required for persistence
+    // manage events
     onMounted(() => {
       window.addEventListener('updateDisplay', updateDisplayEventListener);
       window.addEventListener('keydown', readKeyboardInput);
       window.addEventListener('resize', redrawCanvas);
-      updateImage();
+      updateImage();//required for persistence
     });
 
     onBeforeUnmount(() => {

@@ -37,7 +37,7 @@ export async function uploadPostCard(title_str, imageStr, like_cnt) {
   const blob = new Blob([byteArray], { type: "image/jpeg" });
 
   try {
-    const snapshot = await uploadBytes(storageRef, blob); //HERE
+    const snapshot = await uploadBytes(storageRef, blob); //upload to storage
     console.log('File uploaded successfully:', snapshot);
 
     downloadURL = await getDownloadURL(storageRef); //acts as src for img components
@@ -62,7 +62,7 @@ export async function getPostCards() {
   const querySnapshot = await getDocs(collection(db, "Gallery"));
   const postCards = querySnapshot.docs.map((doc) => {
     const data = doc.data();
-    let imgSrc = data.imgSrc || "public/error-image.jpg";
+    let imgSrc = data.imgSrc || "public/error-image.jpg"; //error handling
     return {
       id: doc.id,
       likes: data.likes || 0,
@@ -74,7 +74,7 @@ export async function getPostCards() {
   return postCards;
 }
 
-export async function getFAQTuples() {
+export async function getFAQTuples() { // only read functionality required
   const querySnapshot = await getDocs(collection(db, "FAQ"));
   const faqTuples = querySnapshot.docs.map((doc) => {
     const data = doc.data();

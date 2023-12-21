@@ -1,4 +1,5 @@
-//nach https://www.raymondcamden.com/2019/10/16/using-indexeddb-with-vuejs
+//nach https://www.raymondcamden.com/2019/10/16/using-indexeddb-with-vuejs implementiert
+
 //open database
 var db;
 var ready = false;
@@ -42,6 +43,8 @@ async function getDb() {
     });
 }
 
+//replaces local or session storage
+
 export async function setDBImage(image) {
     if (!ready) {
         await created();
@@ -84,6 +87,8 @@ export async function getDBImage() {
     });
 }
 
+// store which memes the user has liked on this browser
+
 export async function addDBLikes(list) {
     if (!ready) {
         await created();
@@ -104,6 +109,8 @@ export async function addDBLikes(list) {
         };
     });
 }
+
+//read
 
 export async function getDBLikes() {
     if (!ready) {

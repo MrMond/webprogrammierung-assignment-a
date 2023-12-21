@@ -66,7 +66,6 @@ export default {
           const canvas = document.getElementById("canvas");
           const combinedImage = new Image();
           combinedImage.src = canvas.toDataURL(); //combine all movable elements to a single image
-          console.log(combinedImage.src)
           combinedImage.onload = () => {
             try {
               setDBImage(combinedImage.src).then(() => { //update session storage
@@ -144,7 +143,8 @@ export default {
     const createTextElement = (text) => {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
-      const textarea = { type: "text", text: text, size: 50, x: 10, y: 10, width: 0, height: 0 };
+      const scaledSize = 35 * scaleFactorY.value;
+      const textarea = { type: "text", text: text, size: scaledSize, x: 10, y: 10, width: 0, height: 0 };
       allElements.value.push(textarea);
       drawTextarea(ctx, textarea); //make interactable textarea appear
       makeMovable(canvas);
@@ -203,17 +203,23 @@ export default {
               break;
           }
         });
+        scaleBoundingClientRect(); // update bounding rect of canvas, so that there isn't a disparity between the clicked position and a resized canvas
       }
       console.log("redrew canvas");
     };
 
     const scaleBoundingClientRect = () => {
       rect.value = document.getElementById("canvas").getBoundingClientRect();
+      scaleFactorX.value = document.getElementById("canvas").width / rect.value.width;
+      scaleFactorY.value = document.getElementById("canvas").height / rect.value.height;
+      if(debug.value){
+        console.log("s-x: " + scaleFactorX.value);
+      console.log("c-w: " + document.getElementById("canvas").width);
+      console.log("r-w: " + rect.value.width)
+      }
     }
 
     const makeMovable = (canvas) => { //handle movable entities
-      scaleFactorX.value = canvas.width / rect.value.width;
-      scaleFactorY.value = canvas.height / rect.value.height;
       var isDraggable = false;
 
       canvas.onmousedown = function (event) { //click down --> select element
@@ -224,7 +230,7 @@ export default {
           const ctx = canvas.getContext("2d");
           ctx.fillRect(cursorX.value - 15, cursorY.value - 15, 30, 30);
           try {
-            console.log(`click (${cursorX.value}/${cursorY.value}) text (${selectedElement.value.x}/${selectedElement.value.y}/w:${selectedElement.value.width}/h:${selectedElement.value.height})`);  
+            console.log(`click (${cursorX.value}/${cursorY.value}) text (${selectedElement.value.x}/${selectedElement.value.y}/w:${selectedElement.value.width}/h:${selectedElement.value.height})`);
           } catch { }
           console.log(`scale: (${scaleFactorX.value}/${scaleFactorY.value})`);
           console.log(`rect distance: (${rect.value.left}/${rect.value.top})`);
@@ -238,15 +244,6 @@ export default {
           }
         });
       };
-
-      /*canvas.onmousemove = function (event) { //update position
-        if (isDraggable) {
-          cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
-          cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
-          selectedElement.value.x = cursorX.value
-          selectedElement.value.y = cursorY.value
-        }
-      };*/
 
       canvas.onmouseup = function (event) { //let go --> reposition element
         cursorX.value = (event.clientX - rect.value.left) * scaleFactorX.value;
@@ -349,15 +346,14 @@ export default {
     onMounted(() => {
       window.addEventListener('updateDisplay', updateDisplayEventListener);
       window.addEventListener('keydown', readKeyboardInput);
-      window.addEventListener('resize',scaleBoundingClientRect);
-      scaleBoundingClientRect();
+      window.addEventListener('resize', scaleBoundingClientRect);
       updateImage();
     });
 
     onBeforeUnmount(() => {
       window.removeEventListener('updateDisplay', updateDisplayEventListener);
       window.removeEventListener('keydown', readKeyboardInput);
-      window.removeEventListener('resize',scaleBoundingClientRect);
+      window.removeEventListener('resize', scaleBoundingClientRect);
     });
     return {
       imageAvailable,

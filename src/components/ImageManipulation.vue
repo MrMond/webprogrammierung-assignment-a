@@ -172,7 +172,7 @@ export default {
 
     const drawTextarea = (context, textarea) => {
       const textSize = textarea.size;
-      context.font = `${textSize}px Lobster`;
+      context.font = `${textSize}px Impact`;
       context.fillStyle = 'white';
       context.strokeStyle = 'black';
       context.lineWidth = textSize / 15;

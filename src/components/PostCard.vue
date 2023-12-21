@@ -48,7 +48,9 @@ export default {
   methods: {
     incrementLikes() {
       // Erhöhe die Likes um 1
-      this.$emit('update-likes', this.likes + 1);
+      if(!this.liked){
+        this.$emit('update-likes', this.likes + 1);
+      }
 
       // Setze den Zustand des Herz-Buttons
       this.liked = true;

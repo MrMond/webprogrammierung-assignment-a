@@ -18,13 +18,14 @@ export default {
     const allElements = ref([]);
     const scaleFactorX = ref(1);
     const scaleFactorY = ref(1);
+    const rect = ref(null);
 
     //visual debug marker
-    const checkDevTools =  () => {
+    const checkDevTools = () => {
       if (window.console && (window.console.firebug || window.console.clear)) {
         return true;
       } else {
-        return  false;
+        return false;
       }
     };
     const debug = ref(checkDevTools());
@@ -206,23 +207,30 @@ export default {
       console.log("redrew canvas");
     };
 
+    const scaleBoundingClientRect = () => {
+      rect.value = document.getElementById("canvas").getBoundingClientRect();
+    }
+
     const makeMovable = (canvas) => { //handle movable entities
-      const rect = canvas.getBoundingClientRect();
-      scaleFactorX.value = canvas.width / rect.width;
-      scaleFactorY.value = canvas.height / rect.height;
+      scaleFactorX.value = canvas.width / rect.value.width;
+      scaleFactorY.value = canvas.height / rect.value.height;
       var isDraggable = false;
 
       canvas.onmousedown = function (event) { //click down --> select element
-        cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
-        cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
-        if(debug.value){
+        cursorX.value = (event.clientX - rect.value.left) * scaleFactorX.value;
+        cursorY.value = (event.clientY - rect.value.top) * scaleFactorY.value;
+
+        if (debug.value) { //if debug mode if enabled
           const ctx = canvas.getContext("2d");
-          ctx.fillRect(cursorX.value-15, cursorY.value-15, 30, 30);
+          ctx.fillRect(cursorX.value - 15, cursorY.value - 15, 30, 30);
+          try {
+            console.log(`click (${cursorX.value}/${cursorY.value}) text (${selectedElement.value.x}/${selectedElement.value.y}/w:${selectedElement.value.width}/h:${selectedElement.value.height})`);  
+          } catch { }
+          console.log(`scale: (${scaleFactorX.value}/${scaleFactorY.value})`);
+          console.log(`rect distance: (${rect.value.left}/${rect.value.top})`);
         }
-        try {
-          console.log(`click (${cursorX.value}/${cursorY.value}) text (${selectedElement.value.x}/${selectedElement.value.y}/w:${selectedElement.value.width}/h:${selectedElement.value.height})`);
-        } catch { }
-        allElements.value.forEach(element => {
+
+        allElements.value.forEach(element => { // did we click on an element?
           if (isPointInsideElement(cursorX.value, cursorY.value, element)) {
             selectedElement.value = element;
             console.log("selected Element")
@@ -241,11 +249,11 @@ export default {
       };*/
 
       canvas.onmouseup = function (event) { //let go --> reposition element
-        cursorX.value = (event.clientX - rect.left) * scaleFactorX.value;
-        cursorY.value = (event.clientY - rect.top) * scaleFactorY.value;
-        if(debug.value){
+        cursorX.value = (event.clientX - rect.value.left) * scaleFactorX.value;
+        cursorY.value = (event.clientY - rect.value.top) * scaleFactorY.value;
+        if (debug.value) {
           const ctx = canvas.getContext("2d");
-          ctx.fillRect(cursorX.value - 15, cursorY.value -15, 30, 30);
+          ctx.fillRect(cursorX.value - 15, cursorY.value - 15, 30, 30);
         }
         console.log(`mouseup @ (${cursorX.value}/${cursorY.value})`)
         if (isDraggable) {
@@ -341,12 +349,15 @@ export default {
     onMounted(() => {
       window.addEventListener('updateDisplay', updateDisplayEventListener);
       window.addEventListener('keydown', readKeyboardInput);
+      window.addEventListener('resize',scaleBoundingClientRect);
+      scaleBoundingClientRect();
       updateImage();
     });
 
     onBeforeUnmount(() => {
       window.removeEventListener('updateDisplay', updateDisplayEventListener);
       window.removeEventListener('keydown', readKeyboardInput);
+      window.removeEventListener('resize',scaleBoundingClientRect);
     });
     return {
       imageAvailable,
@@ -429,4 +440,5 @@ export default {
   margin-left: 10px;
   background-color: rgba(255, 255, 255, 0.55);
   font-family: 'Arial', 'serif';
-}</style>
+}
+</style>

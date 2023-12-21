@@ -1,12 +1,16 @@
 <template>
+  <!-- Hintergrundcontainer mit unterschiedlichen Hintergrundbildern für verschiedene Bildschirmgrößen -->
   <div class="background-container">
       <div v-if="isMini" class ="background-small"></div>
       <div v-else class="background-image"></div>
       
-    </div>
+  </div>
+
+  <!-- Hauptlayout mit App-Bar, Navigationsleiste, Hauptinhalt und dynamischer Routeransicht -->
   <VLayout row wrap rounded rounded-md align-start>
+
+    <!-- App-Bar mit Menüsymbol und Titel -->
     <VAppBar rounded class="white-background">
-      <!-- Symbol für die Menüleiste -->
       <VAppBarNavIcon variant="text" @click.stop="drawer = !drawer"/>
 
       <!-- Toolbar Titel -->
@@ -15,14 +19,17 @@
       </div>
     </VAppBar>
 
-    <v-navigation-drawer 
-        v-if="isMini"
-        v-model="drawer"
-        location="top"
-        temporary
-        class="white-background"
-      >
+    <!-- Navigationsleiste (Drawer) für kleine Bildschirme -->
+    <v-navigation-drawer
+      v-if="isMini"
+      v-model="drawer"
+      location="top"
+      temporary
+      class="white-background"
+    >
+
       <v-list>
+        <!-- Navigationspunkte-->
         <VListItem prepend-icon="mdi-home" link to="/home" @click="handleNavigation">
           Home
         </VListItem>
@@ -38,6 +45,7 @@
         </v-list>
       </v-navigation-drawer>
 
+    <!-- Navigationsleiste (Drawer) für größere Bildschirme -->
     <VNavigationDrawer v-else v-model="drawer" class="white-background">
       <VList>
         <!-- Navigationspunkte -->
@@ -62,6 +70,7 @@
       </v-row>
     </VNavigationDrawer>
 
+    <!-- Hauptinhalt (Router-Ansicht) -->
     <VMain>
       <RouterView></RouterView>
     </VMain>
@@ -69,13 +78,14 @@
 </template>
 
 <script setup>
-import BlogIcon from "@/components/icons/IconBlog.vue";
+//imports
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import { computed } from 'vue'
 import { useDisplay } from 'vuetify'
   
+// Dynamische Berechnung der Bildschirmgröße
 const { name } = useDisplay()
 
 const isMini = computed(() => {
@@ -90,29 +100,32 @@ const isMini = computed(() => {
 })
 
 
-
+// Refs für den Drawer-Status und die aktuelle Route
 const drawer = ref(false)
 const route = useRoute()
 const router = useRouter()
 
+// Methode zum Schließen des Drawers bei Navigation
 const handleNavigation = () => {
   drawer.value = false
 }
 
 
-
 </script>
 
 <style scoped>
+
 @font-face {
   font-family: "Lobster";
   src: url("@/assets/fonts/Lobster-Regular.ttf") format("truetype");
 }
 
+/*Style für alle weißen Elemente */
 .white-background {
-  background-color: #ffffff; /* Weiß für die Hintergrundfarbe */
+  background-color: #ffffff; 
 }
 
+/*Style für Name der Website */
 .titel-schriftzug {
   text-align: center;
   display: grid;
@@ -122,19 +135,24 @@ const handleNavigation = () => {
   font-size: x-large;
 }
 
+/*Style für Container des Website Titels */
 .titel-container {
   width:100%;
   background-color: rgb(255, 255, 255);
   
 }
+
+/*Style für container des logos */
 .logo-container {
   padding: 16px;
 }
 
+/*Style für Logo */
 .logo {
   width: 175px;
 }
 
+/*Style für Container des Hintergrundbildes */
 .background-container {
   position: fixed;
   top: 0;
@@ -144,6 +162,7 @@ const handleNavigation = () => {
   z-index: 2;
 }
 
+/*Style für Hintergrundbild, bei großen Bildschirmen */
 .background-image {
   background-image: url(https://images.unsplash.com/photo-1478098711619-5ab0b478d6e6?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
   background-size: c;
@@ -153,6 +172,7 @@ const handleNavigation = () => {
   height: 100%;
 }
 
+/*Style für Hintergrundbild, bei kleinen Bildschirmen */
 .background-small{
   background-image: url(https://images.unsplash.com/photo-1506891536236-3e07892564b7?q=80&w=1888&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);
   background-size: cover;
@@ -161,6 +181,5 @@ const handleNavigation = () => {
   width: 100%;
   height: 100%;
 }
-
 
 </style>

@@ -1,26 +1,28 @@
+// Import der globalen CSS-Datei für Stile
 import './assets/main.css'
 
-import {createApp} from 'vue'
-import {createRouter, createWebHashHistory} from 'vue-router'
+// Importieren der notwendigen Funktionen aus Vue und Vue Router
+import { createApp } from 'vue'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import App from './App.vue'
 import routes from './router/index.js'
 
-// Vue router
+// Vue Router erstellen und konfigurieren
 const router = createRouter({
-  // 4. Provide the history implementation to use. We are using the hash history for simplicity here.
-  history: createWebHashHistory(),
-  routes, // short for `routes: routes`
+  history: createWebHashHistory(), // Verwendung von Hash-History für einfache Konfiguration
+  routes, // Kurzschreibweise für `routes: routes`
 })
 
-// Vuetify
+// Import von Vuetify-Stilen und -Komponenten
 import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
-import {createVuetify} from 'vuetify'
+import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
-import {aliases, mdi} from "vuetify/lib/iconsets/mdi"
+import { aliases, mdi } from "vuetify/lib/iconsets/mdi"
 import colors from 'vuetify/util/colors'
 
+// Erstellen und Konfigurieren von Vuetify
 const vuetify = createVuetify({
   components,
   directives,
@@ -29,14 +31,14 @@ const vuetify = createVuetify({
       light: {
         dark: false,
         colors: {
-          primary: colors.indigo.darken3, // #E53935
-          secondary: colors.red.lighten4, // #FFCDD2
+          primary: colors.indigo.darken3, // Primärfarbe
+          secondary: colors.red.lighten4, // Sekundärfarbe
         }
       },
     },
   },
   icons: {
-    defaultSet: "mdi",
+    defaultSet: "mdi", // Verwendung des Material Design Icons-Sets als Standard
     aliases,
     sets: {
       mdi,
@@ -44,6 +46,7 @@ const vuetify = createVuetify({
   },
 })
 
+// Erstellen der Vue-Instanz, Hinzufügen von Router und Vuetify, Montieren der App am DOM-Element mit der ID 'app'
 const app = createApp(App)
 app.use(router)
 app.use(vuetify)

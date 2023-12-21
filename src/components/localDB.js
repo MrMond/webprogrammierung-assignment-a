@@ -8,15 +8,20 @@ async function created() {
     ready = true;
 }
 
-export async function getDb() {
+async function getDb() {
     return new Promise((resolve, reject) => {
-        let request = window.indexedDB.open("session", 1);
+        let request = window.indexedDB.open("session", 3);
 
         request.onupgradeneeded = function (event) {
             console.log("session storage size increased")
             let db = event.target.result;
-            let objectStore = db.createObjectStore("currentImage", { keyPath: "id", autoIncrement: true });
-            let likeStore = db.createObjectStore("likes", { keyPath: "id", autoIncrement: true });
+
+            if (!db.objectStoreNames.contains("currentImage")) {
+                let objectStore = db.createObjectStore("currentImage", { keyPath: "id", autoIncrement: true });
+            }
+            if (!db.objectStoreNames.contains("likes")) {
+                let newObjectStore = db.createObjectStore("likes", { keyPath: "id", autoIncrement: true });
+            }
         }
 
         request.onsuccess = function (event) {
@@ -58,7 +63,28 @@ export async function setDBImage(image) {
     });
 }
 
-export async function addDBLikes(identifier) {
+export async function getDBImage() {
+    if (!ready) {
+        await created();
+    }
+    return new Promise((resolve, reject) => {
+        let transaction = db.transaction(["currentImage"], "readonly");
+        let likeStore = transaction.objectStore("currentImage");
+        let req = likeStore.get("userImg");
+
+        req.onsuccess = function (event) {
+            let image = event.target.result ? event.target.result.image : null;
+            console.log("got data from session storage");
+            resolve(image);
+        };
+
+        req.onerror = function (event) {
+            reject(event.target.errorCode);
+        };
+    });
+}
+
+export async function addDBLikes(list) {
     if (!ready) {
         await created();
     }
@@ -66,10 +92,10 @@ export async function addDBLikes(identifier) {
         var transaction = db.transaction(["likes"], "readwrite");
         var objectStore = transaction.objectStore("likes");
 
-        var req = objectStore.add({ likedImg: identifier });
+        var req = objectStore.put({ id: "likeList", likedImg: list });
 
         req.onsuccess = function (event) {
-            console.log("set data to session storage");
+            console.log("set data to like storage");
             resolve();
         };
 
@@ -79,19 +105,19 @@ export async function addDBLikes(identifier) {
     });
 }
 
-export async function getDBImage() {
+export async function getDBLikes() {
     if (!ready) {
         await created();
     }
     return new Promise((resolve, reject) => {
-        let transaction = db.transaction(["currentImage"], "readonly");
-        let objectStore = transaction.objectStore("currentImage");
-        let req = objectStore.get("userImg");
+        let transaction = db.transaction(["likes"], "readonly");
+        let objectStore = transaction.objectStore("likes");
+        let req = objectStore.get("likeList");
 
         req.onsuccess = function (event) {
-            let image = event.target.result ? event.target.result.image : null;
-            console.log("got data from session storage");
-            resolve(image);
+            let likes = event.target.result;
+            console.log("got likes from storage ");
+            resolve(likes);
         };
 
         req.onerror = function (event) {

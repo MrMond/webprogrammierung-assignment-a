@@ -22,7 +22,7 @@ export default {
 
     //visual debug marker
     const checkDevTools = () => {
-      if (window.console && (window.console.firebug || window.console.clear)) {
+      if (window.console) {
         return true;
       } else {
         return false;

@@ -185,32 +185,32 @@ export default {
 
     //canvas methods
     const redrawCanvas = () => {
-  const canvas = document.getElementById("canvas");
-  const ctx = canvas.getContext("2d");
-  const img = new Image();
-  img.src = image.value;
-  img.onload = () => {
-    const aspectRatio = img.width / img.height;
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+      img.src = image.value;
+      img.onload = () => {
+        const aspectRatio = img.width / img.height;
 
-    // Neue Canvas-Größe unter Berücksichtigung des Bildverhältnisses
-    const canvasWidth = window.innerWidth * 0.7; // Anpassen, wie gewünscht
-    const canvasHeight = canvasWidth / aspectRatio;
+        // Neue Canvas-Größe unter Berücksichtigung des Bildverhältnisses
+        const canvasWidth = window.innerWidth * 0.7; // Anpassen, wie gewünscht
+        const canvasHeight = canvasWidth / aspectRatio;
 
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+        canvas.width = canvasWidth;
+        canvas.height = canvasHeight;
 
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-    allElements.value.forEach((element) => {
-      switch (element.type) {
-        case "sticker":
-          drawSticker(ctx, element);
-          break;
-        case "text":
-          drawTextarea(ctx, element);
-          break;
-      }
-    });
+        allElements.value.forEach((element) => {
+          switch (element.type) {
+            case "sticker":
+              drawSticker(ctx, element);
+              break;
+            case "text":
+              drawTextarea(ctx, element);
+              break;
+          }
+        });
         scaleBoundingClientRect(); // update bounding rect of canvas, so that there isn't a disparity between the clicked position and a resized canvas
       }
       console.log("redrew canvas");
@@ -220,10 +220,10 @@ export default {
       rect.value = document.getElementById("canvas").getBoundingClientRect();
       scaleFactorX.value = document.getElementById("canvas").width / rect.value.width;
       scaleFactorY.value = document.getElementById("canvas").height / rect.value.height;
-      if(debug.value){
+      if (debug.value) {
         console.log("s-x: " + scaleFactorX.value);
-      console.log("c-w: " + document.getElementById("canvas").width);
-      console.log("r-w: " + rect.value.width)
+        console.log("c-w: " + document.getElementById("canvas").width);
+        console.log("r-w: " + rect.value.width)
       }
     }
 
@@ -354,14 +354,14 @@ export default {
     onMounted(() => {
       window.addEventListener('updateDisplay', updateDisplayEventListener);
       window.addEventListener('keydown', readKeyboardInput);
-      window.addEventListener('resize', scaleBoundingClientRect);
+      window.addEventListener('resize', redrawCanvas);
       updateImage();
     });
 
     onBeforeUnmount(() => {
       window.removeEventListener('updateDisplay', updateDisplayEventListener);
       window.removeEventListener('keydown', readKeyboardInput);
-      window.removeEventListener('resize', scaleBoundingClientRect);
+      window.removeEventListener('resize', redrawCanvas);
     });
     return {
       imageAvailable,

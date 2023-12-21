@@ -105,12 +105,9 @@
 import PostCard from "@/components/PostCard.vue";
 import { ref, computed, onBeforeUnmount, onMounted, reactive } from "vue";
 import { getPostCards, deletePostCard, updatePostCard } from "../components/db"
-import { connectStorageEmulator } from "firebase/storage";
 
 const showModalDialog = ref(false);
-const showAddPostcardDialog = ref(false);
 const selectedPostCard = ref(null);
-const newPostcard = ref({ title: '', imgSrc: '' });
 const galleryData = ref([{ id: null, likes: 0, title: "", imgSrc: "" }]);
 
 
